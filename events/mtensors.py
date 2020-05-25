@@ -73,7 +73,7 @@ class mtensors:
             #FIXME: allow function pointer?
             ML = mags[m]
             MW = ML
-            if ML <= 2.0: #KNMI/NAM Relation
+            if ML <= 2.0: #KNMI/NAM Relation (Kanamori 1977)
                 MW = 0.056262*ML**2 + 0.65553*ML + 0.4968 
             p = 1.5*MW + 9.1 
             M0 = 10**p
