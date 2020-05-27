@@ -73,9 +73,10 @@ class mtensors:
             #FIXME: allow function pointer?
             ML = mags[m]
             MW = ML
-            if ML <= 2.0: #KNMI/NAM Relation (Kanamori 1977)
+            if ML <= 2.0: 
                 MW = 0.056262*ML**2 + 0.65553*ML + 0.4968 
-            p = 1.5*MW + 9.1 
+            #p = 1.5*MW + 9.1 #KNMI/NAM Relation (Kanamori 1977)
+            p = 1.5*MW + 16.1 # in dyn-cm instead of N-m as abaove
             M0 = 10**p
             new_mt = moment_tensor(dates[m],mags[m],lats[m],lons[m],xc[m],    \
                                    yc[m],zc[m],zcb[m],strks[m],dips[m],       \
