@@ -25,6 +25,10 @@ class nammodel:
     _vp_base   = 5900   # constant vp  : see NAM 2017 report
     _vp_ro     = 3900   # constant vp  : see NAM 2017 report
 
+    _Q_ns_u = 50   #see NAM 2017 Report
+    _Q_ns_l = 150  #see NAM 2017 Report
+    _Q_most = 200  #see NAM 2017 Report (everything below the NS formations)
+
     _nx = -1
     _ny = -1
     _is_nxy = False #change once parameters are set
@@ -154,7 +158,7 @@ class nammodel:
         iy = (iy - self._pdf_ymin)/self._dy
         iy = iy.astype(int)
 
-        props = np.zeros((3,self._nx,self._ny,nz),order='C').astype(np.short)
+        props = np.zeros((4,self._nx,self._ny,nz),order='C').astype(np.short)
         print('props.shape:',props.shape)
         print()
 
@@ -226,51 +230,87 @@ class nammodel:
             idc = dc_t[ixy]
 
 
-            props[0,iix,iiy,:ins] = z_ns_u[:ins] + ns_vel[ixy] 
-            props[1,iix,iiy,:inu] = props[0,iix,iiy,:inu] * vs_nb_u[:inu] 
+            '''
+            _Q_ns_u = 50   #see NAM 2017 Report
+            _Q_ns_l = 150  #see NAM 2017 Report
+            _Q_most = 200  #see NAM 2017 Report (everything below the NS formations)
+            '''
+
+            #VP NS
+            props[0,iix,iiy,:ins]    = z_ns_u[:ins] + ns_vel[ixy] 
+            #VS NS_U and NS_L
+            props[1,iix,iiy,:inu]    = props[0,iix,iiy,:inu] * vs_nb_u[:inu] 
             props[1,iix,iiy,inu:ins] = props[0,iix,iiy,inu:ins] * vs_ns_b_slp
-            props[2,iix,iiy,:inu] = rho_nb_u
+            #Rho NS_U and NS_L
+            props[2,iix,iiy,:inu]    = rho_nb_u
             props[2,iix,iiy,inu:ins] = ((1/props[0,iix,iiy,inu:ins])*rho_ns_b_slp+rho_ns_b_isec)*rho_scale
+            #Qu NS_U and NS_L
+            props[3,iix,iiy,:inu]    = self._Q_ns_u
+            props[3,iix,iiy,inu:ins] = self._Q_ns_l
+
+            #Qu everthing below NS_L
+            props[3,iix,iiy,ins:]    = self._Q_most
 
 
+            #VP Chalk
             props[0,iix,iiy,ins:ick] = z_ns_b[ins:ick] + ck_vel[ixy] 
+            #VS Chalk
             props[1,iix,iiy,ins:ick] = props[0,iix,iiy,ins:ick]*vs_ck_b_slp + vs_ck_b_isec
+            #Rho Chalk
             props[2,iix,iiy,ins:ick] = ((1/props[0,iix,iiy,ins:ick])*rho_ck_b_slp+rho_ck_b_isec)*rho_scale
 
 
+            #VP Rijnland + JU + TR
             props[0,iix,iiy,ick:ize] = z_ck_b[ick:ize] + me_vel[ixy] 
+            #VS Rijnland + JU + TR
             props[1,iix,iiy,ick:ize] = props[0,iix,iiy,ick:ize]*vs_ze_t_slp + vs_ze_t_isec
+            #Rho Rijnland + JU + TR
             props[2,iix,iiy,ick:ize] = ((1/props[0,iix,iiy,ick:ize])*rho_ze_t_slp+rho_ze_t_isec)*rho_scale
 
 
+            #VP ZE Halite
             props[0,iix,iiy,ize:ift] = self._vp_ze
+            #VS ZE Halite
             props[1,iix,iiy,ize:ift] = vs_fl_t
+            #Rho ZE Halite
             props[2,iix,iiy,ize:ift] = rho_fl_t
 
 
+            #VP Floater
             props[0,iix,iiy,ift:ifb] = self._vp_fltr
+            #VS Floater
             props[1,iix,iiy,ift:ifb] = vs_fl_b
+            #Rho Floater
             props[2,iix,iiy,ift:ifb] = rho_fl_b
 
 
+            #VP ZE Halite
             props[0,iix,iiy,ifb:izz] = self._vp_zz
+            #VS ZE Halite
             props[1,iix,iiy,ifb:izz] = vs_zz_t
+            #Rho ZE Halite
             props[2,iix,iiy,ifb:izz] = rho_zz_t
 
-            #for iz in range(izz,iro):
+            #VP Base ZE Anhydrite
             props[0,iix,iiy,izz:iro] = self._vp_base
+            #VS Base ZE Anhydrite
             props[1,iix,iiy,izz:iro] = vs_ro_t
+            #Rho Base ZE Anhydrite
             props[2,iix,iiy,izz:iro] = rho_ro_t
 
-            #for iz in range(iro,idc):
+            #VP Rotliegend
             props[0,iix,iiy,iro:idc] = self._vp_ro
+            #VS Rotliegend
             props[1,iix,iiy,iro:idc] = vs_dc_t
+            #Rho Rotliegend
             props[2,iix,iiy,iro:idc] = rho_dc_t
 
-            #for iz in range(idc,nz):
+            #VP Carboniferous
             props[0,iix,iiy,idc:nz] = z_dc[idc:nz]
+            #VS Carboniferous
             props[1,iix,iiy,idc:nz] = \
                     props[0,iix,iiy,idc:nz]*vs_dc_b_slp + vs_dc_b_isec
+            #Rho Carboniferous
             props[2,iix,iiy,idc:nz] = rho_dc_b
 
             if (ixy % perc_5) == 0:
