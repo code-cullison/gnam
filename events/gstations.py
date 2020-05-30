@@ -105,15 +105,18 @@ class gstations:
                         try:
                             # Z component
                             stz += client.get_waveforms(network.code, station.code, "*", "HHZ", \
-                                                              t1, t2, attach_response = True)
+                                                              t1, t2, attach_response=False)
+                                                              #t1, t2, attach_response = True)
                             
                             # Northish component
                             st1 += client.get_waveforms(network.code, station.code, "*", "HH1", \
-                                                              t1, t2, attach_response = True)
+                                                              t1, t2, attach_response=False)
+                                                              #t1, t2, attach_response = True)
                             
                             # Eastish component
                             st2 += client.get_waveforms(network.code, station.code, "*", "HH2", \
-                                                              t1, t2, attach_response = True)
+                                                              t1, t2, attach_response=False)
+                                                              #t1, t2, attach_response = True)
                             
                         except:
                             l_error_stats.append(station)
@@ -131,12 +134,18 @@ class gstations:
                 stations_dict['excluded'] = l_estations
                 stations_dict['error'] = l_error_stats
 
+                stz.attach_response(self._inventory_dict[b])
                 stz.detrend(type='demean')
-                stz.remove_response()
+                stz.remove_response(output="DISP")
+
+                st1.attach_response(self._inventory_dict[b])
                 st1.detrend(type='demean')
-                st1.remove_response()
+                st1.remove_response(output="DISP")
+
+                st2.attach_response(self._inventory_dict[b])
                 st2.detrend(type='demean')
-                st2.remove_response()
+                st2.remove_response(output="DISP")
+
                 streams_dict['Z'] = stz
                 streams_dict['1'] = st1
                 streams_dict['2'] = st2
