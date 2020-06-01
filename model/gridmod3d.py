@@ -1,22 +1,23 @@
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 from scipy.ndimage import gaussian_filter1d
+import time
 
 class gridmod3d:
 
-    _subprops = np.nan
-    _nprops = np.nan
+    _subprops = None
+    _nprops   = None
 
-    _ncells  = ()
-    _npoints = ()
-    _deltas  = ()
-    _gorigin = ()
-    _rotdeg  = np.nan
-    _rotrad  = np.nan
+    _ncells  = None
+    _npoints = None
+    _deltas  = None
+    _gorigin = None
+    _rotdeg  = None
+    _rotrad  = None
 
-    _axorder = {}
+    _axorder = None
 
-    shape = ()
+    shape = None
     
 
     def __init__(self,subprops,nprops,axorder,dims,deltas,gorigin=(0,0,0),rotdeg=0):
@@ -90,9 +91,11 @@ class gridmod3d:
 
     def _getLocalCoordsPointsByAxis(self,key):
 
-        assert isinstance(key, str)
+        assert (key == 'X') or (key == 'Y') or (key == 'Z')
 
-        i = self._axorder[key]
+        ax_dict = {'X':0,'Y':1,'Z':2}
+
+        i = ax_dict[key]
         ld = self._deltas[i]
         ln = self._npoints[i]
         imin = 0
@@ -186,7 +189,9 @@ class gridmod3d:
 
         #print('itrans:',itrans)
 
-        self._subprops = np.copy(self._subprops.transpose(itrans))
+        temp_props = np.copy(self._subprops.transpose(itrans),order='C')
+        del self._subprops # clean up memory because thses can be big
+        self._subprops = temp_props
 
         self._axorder['X'] = dic['X']
         self._axorder['Y'] = dic['Y']
@@ -323,21 +328,43 @@ class gridmod3d:
         return slice_dprops
 
 
-    def sliceVolumeValsFromCoordsXY(self,sxyc,local=True):
+    def sliceVolumeValsFromCoordsXY(self,snx,sny,sxyc,local=True):
+
+        #print('self.shape:',self.shape)
+        save_axorder = self._axorder.copy()
+        self.changeAxOrder({'X':2,'Y':1,'Z':0})
+        #print('self.shape:',self.shape)
 
         #FIXME: need to check coordinate bounds
         xc,yc,zc,xyc = self.getCoordsXYZTuple(local)
+        del xyc # not needed
         snxyc = sxyc.shape[0]
+        #print('snxyc:',snxyc)
 
-        slice_props = np.zeros((self._nprops,sxyc.shape[0]*len(zc)))
+        snz = len(zc)
+        zperc = 1.0/snz
+        slice_props = np.zeros((self._nprops,snxyc*snz),dtype=np.float32)
         for p in range(self._nprops):
-            rgi = RegularGridInterpolator((xc,yc,zc),self._subprops[p])
-            trim_props = slice_props[p,:,:,:]
-            for iz in range(len(rzc)):
+            #print('index.order: %d,%d,%d,%d' %(self._nprops,len(zc),len(yc),len(xc)))
+            rgi = RegularGridInterpolator((zc,yc,xc),self._subprops[p])
+            start_p = time.time()
+            for iz in range(snz):
+                start_z = time.time()
+                #print('interpolating z%% %f' %(100*iz*zperc))
                 z = zc[iz]
                 for ixy in range(snxyc):
-                    trim_props[ixy + snxyc*iz] = rgi((sxyc[ixy,0],sxyc[ixy,1],z))
+                    slice_props[p,ixy + snxyc*iz] = rgi((z,sxyc[ixy,1],sxyc[ixy,0]))
+                z_time = time.time() - start_z
+                #print('Exec Time for one z-loop:',z_time)
+            p_time = time.time() - start_p
+            #print('Exec Time for one P-loop:',p_time)
 
+        self.changeAxOrder(save_axorder)
+
+        #temp_props = np.copy(slice_props.reshape((self._nprops,snz,sny,snx)),order='C')
+        #del slice_props
+            
+        #return temp_props
         return slice_props
 
     def smoothX(self,x_sig,x_only=True):
@@ -434,86 +461,14 @@ class gridmod3d:
         self.changeAxOrder(save_axorder)
 
 
+    def get_npoints(self):
+        return self._npoints
+
+    def get_deltas(self):
+        return self._deltas
+
+    def get_gorigin(self):
+        return self._gorigin
+
     #def sliceVolumeGrid3D(rdeg,rnxyz,roxyz,rdxyz):
-
-
-#return (props,xdata,ydata,zdata)
-
-'''
-#values = np.zeros((27)).reshape((3,3,3)).astype(np.int)
-mysubprops = np.zeros((3,5,4,3))
-'''
-'''
-mysubprops[0,:,:,:] = np.copy(values)
-mysubprops[1,:,:,:] = np.copy(values)
-mysubprops[2,:,:,:] = np.copy(values)
-'''
-'''
-mysubprops[:,:,:,1] += 1
-mysubprops[:,:,:,2] += 2
-mysubprops[:,:,1,:] += 10
-mysubprops[:,:,2,:] += 20
-mysubprops[:,:,3,:] += 30
-mysubprops[:,1,:,:] += 100
-mysubprops[:,2,:,:] += 200
-mysubprops[:,3,:,:] += 300
-mysubprops[:,4,:,:] += 400
-mysubprops[1,:,:,:] += 1000
-mysubprops[2,:,:,:] += 2000
-
-print('mysubpropsp[0]:\n', mysubprops[0,:,:,:])
-mygm = gridmod3d(mysubprops,3,(5,4,3),(100,100,100),(20000,20000,0),30,{'X':0,'Y':1,'Z':2})
-
-mysub = mygm.getNPArray()
-print('mysub[0,:,:,:]:\n', mysub[0,:,:,:])
-
-mygm.changeAxOrder({'X':0,'Y':1,'Z':2})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-mygm.changeAxOrder({'X':0,'Y':2,'Z':1})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-mygm.changeAxOrder({'X':1,'Y':0,'Z':2})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-mygm.changeAxOrder({'X':1,'Y':2,'Z':0})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-mygm.changeAxOrder({'X':2,'Y':0,'Z':1})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-mygm.changeAxOrder({'X':2,'Y':1,'Z':0})
-mysubT = mygm.getNPArray()
-print('mysubT[0]:\n', mysubT[0,:,:,:])
-
-xp = mygm.getLocalCoordsPointsX()
-print('xp:\n',xp)
-
-xc = mygm.getLocalCoordsCellsX()
-print('xc:\n',xc)
-
-yp = mygm.getLocalCoordsPointsY()
-print('yp:\n',yp)
-
-yc = mygm.getLocalCoordsCellsY()
-print('yc:\n',yc)
-
-zp = mygm.getLocalCoordsPointsZ()
-print('zp:\n',zp)
-
-zc = mygm.getLocalCoordsCellsZ()
-print('zc:\n',zc)
-
-xyp = mygm.getLocalCoordsPointsXY()
-print('xyp:\n',xyp)
-
-xyc = mygm.getLocalCoordsCellsXY()
-print('xyc:\n',xyc)
-'''
-
 
