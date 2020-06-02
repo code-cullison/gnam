@@ -50,7 +50,31 @@ class gridmod3d:
     def __getitem__(self,key):
         return self._subprops[key]
 
-    def subsample(self,xf,yf,zf):
+    def __str__(self):
+        str_dict = { 'ncells':self._ncells,'npoints':self._npoints, \
+                     'deltas':self._deltas,'origin':self._gorigin,  \
+                     'rotation (degres)':self._rotdeg,              \
+                     'rotation (rads)':self._rotrad,                \
+                     'shape':self.shape,'Axis Order':self._axorder  }
+        return str(str_dict)
+
+
+    def _rotate_translate_xy_coords(self,xyc,deg):
+
+        if deg != 0:
+            rad = deg*np.pi/180
+            rrm = np.array([[np.cos(rad),-np.sin(rad)],[np.sin(rad),np.cos(rad)]]) 
+
+            for i in range(xyc.shape[0]):
+                xyc[i,:] = rrm.dot(xyc[i,:])
+
+        xyc[:,0] += self._gorigin[0]
+        xyc[:,1] += self._gorigin[1]
+
+        return xyc
+
+
+    def _subsample(self,xf,yf,zf,use_half_z=False):
 
         _xf  = int(xf+0.5)
         _yf  = int(yf+0.5)
@@ -60,7 +84,10 @@ class gridmod3d:
         save_axorder = self._axorder.copy()
         self.changeAxOrder({'X':0,'Y':1,'Z':2})
 
-        self._subprops = np.copy(self._subprops[:,::_xf,::_yf,::zf])
+        if use_half_z:
+            self._subprops = np.copy(self._subprops[:,::_xf,::_yf,_hzf::zf])
+        else:
+            self._subprops = np.copy(self._subprops[:,::_xf,::_yf,::zf])
 
         nx = self._subprops.shape[1]
         ny = self._subprops.shape[2]
@@ -78,9 +105,19 @@ class gridmod3d:
 
         self.shape = self._subprops.shape
 
+    def subsample(self,xf,yf,zf):
+        return self._subsample(xf,yf,zf,False)
+
+    def subsample_half_z(self,xf,yf,zf):  # for specfem
+        return self._subsample(xf,yf,zf,True)
+
     def _getLocalCoordsCellsByAxis(self,key):
 
-        assert isinstance(key, str)
+        assert (key == 'X') or (key == 'Y') or (key == 'Z')
+
+        ax_dict = {'X':0,'Y':1,'Z':2}
+
+        i = ax_dict[key]
 
         i = self._axorder[key]
         ld = self._deltas[i]
@@ -133,6 +170,23 @@ class gridmod3d:
         lcy = self.getLocalCoordsPointsY()
 
         return np.transpose([np.tile(lcx, len(lcy)), np.repeat(lcy, len(lcx))])
+
+    def _getGlobalCoordsXY(self,as_points=True):
+
+        if as_points:
+            lxy = self.getLocalCoordsPointsXY()
+        else:
+            lxy = self.getLocalCoordsCellsXY()
+
+        gxy = self._rotate_translate_xy_coords(lxy,self._rotdeg)
+
+        return gxy
+
+    def getGlobalCoordsPointsXY(self):
+        return self._getGlobalCoordsXY(as_points=True)
+
+    def getGlobalCoordsCellsXY(self):
+        return self._getGlobalCoordsXY(as_points=False)
 
     def _checkAxOrderDict(self,dic):
         isgood = False
@@ -202,23 +256,6 @@ class gridmod3d:
 
     def getNPArray(self):
         return np.copy(self._subprops)
-
-
-    def getRotatedCoordsXY(self,rad,rnx,rny,rox,roy,rdx,rdy):
-
-        rxc = np.arange(rnx)*rdx
-        rxy = np.arange(rny)*rdy
-
-        rxyc = np.transpose([np.tile(rxc, len(ryc)), np.repeat(ryc, len(rxc))])
-        rrm = np.array([[np.cos(rad),-np.sin(rad)],[np.sin(rad),np.cos(rad)]]) 
-
-        for i in range(rxyc.shape[0]):
-            rxyc[i,:] = rrm.dot(arr[i,:])
-
-        rxyc[:,0] += rox
-        rxyc[:,1] += roy
-
-        return rxyc
 
     def depthValsSliceFromZIndex(self,iz):
 
@@ -328,7 +365,7 @@ class gridmod3d:
         return slice_dprops
 
 
-    def sliceVolumeValsFromCoordsXY(self,snx,sny,sxyc,local=True):
+    def sliceVolumeValsFromCoordsXY(self,sxyc,local=True):
 
         #print('self.shape:',self.shape)
         save_axorder = self._axorder.copy()
@@ -366,6 +403,45 @@ class gridmod3d:
             
         #return temp_props
         return slice_props
+
+    def slice_volume_by_bbox( self,sbbox,sdx=-1,sdy=-1,sdz=-1):
+
+        if sdx == -1:
+            sdx = self._deltas[0]
+        if sdy == -1:
+            sdy = self._deltas[1]
+        if sdz == -1:
+            sdz = self._deltas[2]
+
+        cl = sbbox.getCLoop()
+        ldeg = sbbox.getRotDeg()
+
+        xmin = np.min(cl[:,0])
+        xmax = np.max(cl[:,0])
+        ymin = np.min(cl[:,0])
+        ymax = np.max(cl[:,0])
+        zmax = self._npoints[2]*self._deltas[2] 
+        zmin = self._gorigin[2]
+
+        xspan = xmax - xmin
+        yspan = ymax - ymin
+        zspan = zmax - zmin
+
+        lnx = int(xspan/sdx) + int(1) ## +1: for npoints
+        lny = int(yspan/sdy) + int(1) ## +1: for npoints
+        lnz = int(zspan/sdz) + int(1) ## +1: for npoints
+
+        lxc = sdx*np.arange(lnx)
+        lyc = sdy*np.arange(lny)
+        lzc = sdz*np.arange(lnz)
+
+        lxyc = np.transpose([np.tile(lxc, len(lyc)), np.repeat(lyc, len(lxc))])
+
+        gxyc = self._rotate_translate_xy_coords(lxyc,ldeg)
+
+        return self.sliceVolumeValsFromCoordsXY(gxyc,local=False)
+
+        
 
     def smoothX(self,x_sig,x_only=True):
 
