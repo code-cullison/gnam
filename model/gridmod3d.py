@@ -2,6 +2,7 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 from scipy.ndimage import gaussian_filter1d
 import time
+import copy
 
 class gridmod3d:
 
@@ -59,7 +60,7 @@ class gridmod3d:
         return str(str_dict)
 
 
-    def _rotate_translate_xy_coords(self,xyc,deg):
+    def _rotate_xy_coords(self,xyc,deg):
 
         if deg != 0:
             rad = deg*np.pi/180
@@ -68,48 +69,66 @@ class gridmod3d:
             for i in range(xyc.shape[0]):
                 xyc[i,:] = rrm.dot(xyc[i,:])
 
+        return xyc
+
+    def _rotate_translate_xy_coords(self,xyc,deg):
+
+        xyc = self._rotate_xy_coords(xyc,deg)
+
         xyc[:,0] += self._gorigin[0]
         xyc[:,1] += self._gorigin[1]
 
         return xyc
 
 
-    def _subsample(self,xf,yf,zf,use_half_z=False):
+    def subsample(self, isx=0,iex=None,idx=2, \
+                        isy=0,iey=None,idy=2, \
+                        isz=0,iez=None,idz=2  ):
 
-        _xf  = int(xf+0.5)
-        _yf  = int(yf+0.5)
-        _hzf = int(0.5*zf + 0.5)
-        _zf  = int(2*_hzf)
+        _isx = int(isx+0.5)
+        _isy = int(isy+0.5)
+        _isz = int(isz+0.5)
+
+        _iex = iex
+        _iey = iey
+        _iez = iez
+        if iex is not None:
+            _iex = int(iex+0.5)
+        if iey is not None:
+            _iey = int(iey+0.5)
+        if iez is not None:
+            _iez = int(iez+0.5)
+
+        _idx = int(idx+0.5)
+        _idy = int(idy+0.5)
+        _idz = int(idz+0.5)
 
         save_axorder = self._axorder.copy()
         self.changeAxOrder({'X':0,'Y':1,'Z':2})
 
-        if use_half_z:
-            self._subprops = np.copy(self._subprops[:,::_xf,::_yf,_hzf::zf])
-        else:
-            self._subprops = np.copy(self._subprops[:,::_xf,::_yf,::zf])
+        self._subprops = np.copy(self._subprops[:,_isx:_iex:_idx,_isy:_iey:_idy,_isz:_iez:_idz])
 
         nx = self._subprops.shape[1]
         ny = self._subprops.shape[2]
         nz = self._subprops.shape[3]
 
-        dx = self._deltas[0]*_xf
-        dy = self._deltas[1]*_yf
-        dz = self._deltas[2]*_zf
+        dx = self._deltas[0]*_idx
+        dy = self._deltas[1]*_idy
+        dz = self._deltas[2]*_idz
+
+        ox = self._gorigin[0] + _isx*self._deltas[0]
+        oy = self._gorigin[1] + _isy*self._deltas[1]
+        oz = self._gorigin[2] + _isz*self._deltas[2]
 
         self._npoints = (nx,ny,nz)
         self._ncells  = (nx-1,ny-1,nz-1)
         self._deltas  = (dx,dy,dz)
+        self._gorigin = (ox,oy,oz)
 
         self.changeAxOrder(save_axorder)
 
         self.shape = self._subprops.shape
-
-    def subsample(self,xf,yf,zf):
-        return self._subsample(xf,yf,zf,False)
-
-    def subsample_half_z(self,xf,yf,zf):  # for specfem
-        return self._subsample(xf,yf,zf,True)
+        
 
     def _getLocalCoordsCellsByAxis(self,key):
 
@@ -367,34 +386,49 @@ class gridmod3d:
 
     def sliceVolumeValsFromCoordsXY(self,sxyc,local=True):
 
-        #print('self.shape:',self.shape)
+        print('self.shape:',self.shape)
         save_axorder = self._axorder.copy()
         self.changeAxOrder({'X':2,'Y':1,'Z':0})
-        #print('self.shape:',self.shape)
+        print('self.shape:',self.shape)
 
         #FIXME: need to check coordinate bounds
         xc,yc,zc,xyc = self.getCoordsXYZTuple(local)
+
+        xmin = np.min(xc)
+        xmax = np.max(xc)
+        ymin = np.min(yc)
+        ymax = np.max(yc)
+        print('mxmin,mxmax = %f,%f:' %(xmin,xmax))
+        print('mymin,mymax = %f,%f:' %(ymin,ymax))
         del xyc # not needed
         snxyc = sxyc.shape[0]
-        #print('snxyc:',snxyc)
+        sxmin = np.min(sxyc[:,0])
+        sxmax = np.max(sxyc[:,0])
+        symin = np.min(sxyc[:,1])
+        symax = np.max(sxyc[:,1])
+        print('sxmin,sxmax = %f,%f:' %(sxmin,sxmax))
+        print('symin,symax = %f,%f:' %(symin,symax))
+        print('snxyc:',snxyc)
 
         snz = len(zc)
         zperc = 1.0/snz
-        slice_props = np.zeros((self._nprops,snxyc*snz),dtype=np.float32)
+        slice_props = np.zeros((self._nprops,snz,snxyc),dtype=np.float32)
         for p in range(self._nprops):
-            #print('index.order: %d,%d,%d,%d' %(self._nprops,len(zc),len(yc),len(xc)))
-            rgi = RegularGridInterpolator((zc,yc,xc),self._subprops[p])
+            print('index.order: %d,%d,%d,%d' %(self._nprops,len(zc),len(yc),len(xc)))
+            #rgi = RegularGridInterpolator((zc,yc,xc),self._subprops[p])
             start_p = time.time()
             for iz in range(snz):
                 start_z = time.time()
-                #print('interpolating z%% %f' %(100*iz*zperc))
+                rgi = RegularGridInterpolator((yc,xc),self._subprops[p,iz,:,:])
+                print('interpolating z%% %f' %(100*iz*zperc))
                 z = zc[iz]
                 for ixy in range(snxyc):
-                    slice_props[p,ixy + snxyc*iz] = rgi((z,sxyc[ixy,1],sxyc[ixy,0]))
+                    #print('interp_x,interp_y = %f,%f' %(sxyc[ixy,0],sxyc[ixy,1]))
+                    slice_props[p,iz,ixy] = rgi((sxyc[ixy,1],sxyc[ixy,0]))
                 z_time = time.time() - start_z
-                #print('Exec Time for one z-loop:',z_time)
+                print('Exec Time for one z-loop:',z_time)
             p_time = time.time() - start_p
-            #print('Exec Time for one P-loop:',p_time)
+            print('Exec Time for one P-loop:',p_time)
 
         self.changeAxOrder(save_axorder)
 
@@ -406,42 +440,98 @@ class gridmod3d:
 
     def slice_volume_by_bbox( self,sbbox,sdx=-1,sdy=-1,sdz=-1):
 
+        sbbox = copy.deepcopy(sbbox)
+
         if sdx == -1:
             sdx = self._deltas[0]
         if sdy == -1:
             sdy = self._deltas[1]
-        if sdz == -1:
-            sdz = self._deltas[2]
 
-        cl = sbbox.getCLoop()
+        orig = sbbox.getOrigin()
         ldeg = sbbox.getRotDeg()
 
-        xmin = np.min(cl[:,0])
-        xmax = np.max(cl[:,0])
-        ymin = np.min(cl[:,0])
-        ymax = np.max(cl[:,0])
-        zmax = self._npoints[2]*self._deltas[2] 
-        zmin = self._gorigin[2]
+        cl = sbbox.getCLoop()
+        bxmin = np.min(cl[:,0])
+        bxmax = np.max(cl[:,0])
+        bymin = np.min(cl[:,1])
+        bymax = np.max(cl[:,1])
+        print('bxmin,bxmax = %f,%f:' %(bxmin,bxmax))
+        print('bymin,bymax = %f,%f:' %(bymin,bymax))
+        
+        # rotate to local coordinates
+        if ldeg != 0:
+            sbbox.rotate(-ldeg)
+            cl = sbbox.getCLoop()
 
-        xspan = xmax - xmin
-        yspan = ymax - ymin
-        zspan = zmax - zmin
+        # get the span of x and y
+        x0 = cl[0,0] # corner-0
+        x3 = cl[3,0] # corner-3
+        y0 = cl[0,1] # corner-0
+        y1 = cl[1,1] # corner-1
 
-        lnx = int(xspan/sdx) + int(1) ## +1: for npoints
-        lny = int(yspan/sdy) + int(1) ## +1: for npoints
-        lnz = int(zspan/sdz) + int(1) ## +1: for npoints
+        xspan = np.abs(x3 - x0)
+        yspan = np.abs(y1 - y0)
+
+        # create new local x and y coordinates
+        lnx = int(xspan/sdx +0.5) + int(1) ## +1: for npoints
+        lny = int(yspan/sdy +0.5) + int(1) ## +1: for npoints
 
         lxc = sdx*np.arange(lnx)
         lyc = sdy*np.arange(lny)
-        lzc = sdz*np.arange(lnz)
 
+        # create xy coordinate pairs for interpolating
         lxyc = np.transpose([np.tile(lxc, len(lyc)), np.repeat(lyc, len(lxc))])
 
-        gxyc = self._rotate_translate_xy_coords(lxyc,ldeg)
+        # rotate xy coordinates in to global coordinate frame
+        if ldeg != 0:
+            lxyc = self._rotate_xy_coords(lxyc,ldeg)
 
-        return self.sliceVolumeValsFromCoordsXY(gxyc,local=False)
+        # translate xy coordiantes to global origin
+        lxyc[:,0] += orig[0]
+        lxyc[:,1] += orig[1]
+        gxyc = lxyc
+        gxmin = np.min(gxyc[:,0])
+        gxmax = np.max(gxyc[:,0])
+        gymin = np.min(gxyc[:,1])
+        gymax = np.max(gxyc[:,1])
+        print('gxmin,gxmax = %f,%f:' %(gxmin,gxmax))
+        print('gymin,gymax = %f,%f:' %(gymin,gymax))
+        print('gxyc.shape:',gxyc.shape)
 
+        # slice by coordinates
+        sprops = self.sliceVolumeValsFromCoordsXY(gxyc,local=False)
+        print('nz,ny,nx = %d,%d,%d' %(self._npoints[2],lny,lnx))
+        print('Before Reshape: ', sprops.shape)
+
+        #return sprops
+
+        # reshape into 4D ndarray
+        sprops = sprops.reshape((self._nprops,self._npoints[2],lny,lnx))
+        print('After Reshape:  ', sprops.shape)
+
+        # Transpose in to order: {'X':0,'Y':1,'Z':2}
+        sprops = sprops.transpose(0,3,2,1)
+        print('After Transpose:', sprops.shape)
         
+        # paramters for new gridmod3d
+        nx = lnx
+        ny = lny
+        nz = self._npoints[2]
+        dx = sdx
+        dy = sdy
+        dz = self._deltas[2]
+        ox = orig[0]
+        oy = orig[1]
+        oz = self._gorigin[2]
+        axorder = {'X':0,'Y':1,'Z':2}
+        nprops = self._nprops
+        rdeg = ldeg
+
+        # return a new gridmod3d 
+        return gridmod3d(sprops,nprops,axorder,(nx,ny,nz),(dx,dy,dz),(ox,oy,oz),rdeg)
+
+    #end slice_from_bbox()
+
 
     def smoothX(self,x_sig,x_only=True):
 
