@@ -35,7 +35,8 @@ def write_vtk_gridded_model_3d(fqpname,props,xdata,ydata,zdata):
     ####################################################
     ## Write VTK file with all three properties
 
-    ofilename = fqpname + '.vtr'
+    #ofilename = fqpname + '.vtr'
+    ofilename = fqpname
 
     tprops = np.copy(props) #using np.copy() maybe faster if no reordering
     tprops = tprops.transpose(0,3,2,1)
