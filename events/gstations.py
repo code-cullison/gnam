@@ -326,3 +326,6 @@ class gstations:
                     func_p(stations)
                     self._event_stations_dict[ekey][bkey][skey] = stations
 
+
+    def get_inventory(self,bkey):
+        return self._inventory_dict[bkey]
