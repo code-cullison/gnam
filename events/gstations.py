@@ -184,10 +184,10 @@ class gstations:
     def getStreamZ(self,ekey,bkey):
         return self._getStream(ekey,bkey,'Z')
 
-    def getStream1(self,bkey):
+    def getStream1(self,ekey,bkey):
         return self._getStream(ekey,bkey,'1')
 
-    def getStream2(self,bkey):
+    def getStream2(self,ekey,bkey):
         return self._getStream(ekey,bkey,'2')
 
 
