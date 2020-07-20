@@ -130,6 +130,7 @@ class GMUtils:
         vp  = props[0,:,:,::-1]
         vs  = props[1,:,:,::-1]
         rho = props[2,:,:,::-1]
+        Qu  = props[3,:,:,::-1]
 
         f = open('%s/mesh_file' % fpath, 'w')
         f.write('%ld\n' % (nx*ny*nz))
@@ -191,7 +192,7 @@ class GMUtils:
                     m_tup = (i_e, cv[0], cv[1], cv[2], cv[3], cv[4], cv[5], cv[6], cv[7])
                     mesh.append('%d %d %d %d %d %d %d %d %d\n' %m_tup)
                     mats.append('%d %d\n' %(i_e,i_e))
-                    nummats.append('2 %d %d %d %d 9999 9999 0\n' % (i_e,rho[ix,iy,iz],vp[ix,iy,iz],vs[ix,iy,iz]))
+                    nummats.append('2 %d %d %d %d 9999 %d 0\n' % (i_e,rho[ix,iy,iz],vp[ix,iy,iz],vs[ix,iy,iz],Qu[ix,iy,iz]))
 
                     if iz == 0:
                         # Add bottom face
