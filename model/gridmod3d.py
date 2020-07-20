@@ -547,9 +547,12 @@ class gridmod3d:
         ny = self._npoints[1]
         nz = self._npoints[2]
         perc_10 = int(nz/10 + 0.5)
-        for iz in range(nz):
-            for iy in range(ny):
-                for ip in range(self._nprops):
+        for ip in range(self._nprops):
+        #for iz in range(nz):
+            for iz in range(nz):
+            #for iy in range(ny):
+                for iy in range(ny):
+                #for ip in range(self._nprops):
                     self._subprops[ip,iz,iy,:] = gaussian_filter1d(self._subprops[ip,iz,iy,:], x_sig) #VP
             if (iz % perc_10) == 0:
                 print('Currently %d percent finished smoothing in x-direction' % int((iz//perc_10)*10))
@@ -573,9 +576,12 @@ class gridmod3d:
         nx = self._npoints[0]
         nz = self._npoints[2]
         perc_10 = int(nx/10 + 0.5)
-        for ix in range(nx):
-            for iz in range(nz):
-                for ip in range(self._nprops):
+        for ip in range(self._nprops):
+        #for ix in range(nx):
+            for ix in range(nx):
+            #for iz in range(nz):
+                for iz in range(nz):
+                #for ip in range(self._nprops):
                     self._subprops[ip,ix,iz,:] = gaussian_filter1d(self._subprops[ip,ix,iz,:], y_sig)
             if (ix % perc_10) == 0:
                 print('Currently %d percent finished smoothing in y-direction' % int((ix//perc_10)*10))
@@ -599,9 +605,12 @@ class gridmod3d:
         nx = self._npoints[0]
         ny = self._npoints[1]
         perc_10 = int(nx/10 + 0.5)
-        for ix in range(nx):
-            for iy in range(ny):
-                for ip in range(self._nprops):
+        for ip in range(self._nprops):
+        #for ix in range(nx):
+            for ix in range(nx):
+            #for iy in range(ny):
+                for iy in range(ny):
+                #for ip in range(self._nprops):
                     self._subprops[ip,ix,iy,:] = gaussian_filter1d(self._subprops[ip,ix,iy,:], z_sig)
             if (ix % perc_10) == 0:
                 print('Currently %d percent finished smoothing in z-direction' % int((ix//perc_10)*10))
