@@ -3,9 +3,9 @@ from shapely.geometry import Point, Polygon
 
 class bbox:
 
-    _c_loop = []
+    _c_loop = None
     _rotdeg = None
-    _origin = []
+    _origin = None
     
 
     def __init__(self, c_loop, rotdeg=0):
