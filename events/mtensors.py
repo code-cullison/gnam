@@ -35,7 +35,7 @@ class mtensors:
         assert len(lons) == self._nmt
 
         xc    = self.get_xcoords()
-        print('inside xc:\n',xc)
+        #print('inside xc:\n',xc)
         assert len(xc) == self._nmt
 
         yc    = self.get_ycoords()
@@ -169,7 +169,7 @@ class mtensors:
             mt = self._l_mts[imt].get_aki_tensor_utri()
             xc = self._l_mts[imt]['XC']
             yc = self._l_mts[imt]['YC']
-            print('x,y = %f,%f' %(xc,yc))
+            #print('x,y = %f,%f' %(xc,yc))
             ball = beach(mt, xy=(xc, yc), width=diam, facecolor=fc)
             l_bball.append(ball)
 
