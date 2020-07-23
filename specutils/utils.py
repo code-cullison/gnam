@@ -15,7 +15,18 @@ def trim_resample_stream(st,t0,tN,dt):
         _samp = _st[i].stats.sampling_rate
         _dt = 1/_samp
 
-        assert _t0 <= t0 and tN <= _tN
+        station = _st[i].stats.station
+        channel = _st[i].stats.channel
+        tr_str = station + '.' + channel
+        if t0 < _t0 or _tN < tN:
+            print('There was an error trimming trace:',tr_str)
+            print('f() t0:',t0)
+            print('f() _t0:',_t0)
+            print('f() tN:',tN)
+            print('f() _tN:',_tN)
+            print('f() dt:',dt)
+            print('f() _dt:',_dt)
+            assert False
 
         if dt != _dt:
             _st[i].resample(int(1/dt))
