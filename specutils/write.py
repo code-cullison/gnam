@@ -58,3 +58,35 @@ def write_cmtsolution(fqpname,mt,lx,ly):
     f.writelines(cmtlines_str)
     f.close()
 
+
+def write_stream_2_spec_ascii(st,ofqdpath,is_zne=False):
+
+        for tr in st:
+            spec_pair_list = [] #time,amplitude pairs
+
+            tr_spec_chan = tr.stats.channel
+
+            if is_zne:
+                #Example of filename: 'NL.G094.FXX.semd'
+                tr_spec_chan = '.BOO.'
+                comp_char = tr.stats.channel[2]
+                if comp_char == 'Z':
+                    tr_spec_chan = '.FXZ.'
+                elif comp_char == 'E':
+                    tr_spec_chan = '.FXX.'
+                elif comp_char == 'N':
+                    tr_spec_chan = '.FXY.'
+                else:
+                    print('Uh-oh! Spaghetti Os!')
+                    assert False
+
+            tr_filename = 'NL.' + tr.stats.station + tr_spec_chan + 'semd'
+
+            for it in range(tr.count()):
+                spec_pair_list.append('%E   %E\n' %(tr.times()[it],tr.data[it]))
+
+            ofqpname = ofqdpath + '/' + tr_filename
+            f = open(ofqpname, 'w')
+            f.writelines(spec_pair_list)
+            f.close()
+    
