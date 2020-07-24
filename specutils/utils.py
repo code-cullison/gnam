@@ -40,44 +40,34 @@ def bandpass_stream(st,f1,f2,nc=4):
     _st.filter('bandpass',freqmin=f1,freqmax=f2,corners=nc,zerophase=True)
     return _st
 
-def conform_and_bandpass_streams_for_adjsrc(obs_st,syn_st,f1,f2):
+def conform_and_bandpass_streams_for_adjsrc(obs_st,syn_st,resamp,tN,f1,f2):
 
     assert len(obs_st) == len(syn_st)
-    _obs_st = obs_st.copy()
-    _syn_st = syn_st.copy()
+    obs_st.sort()
+    syn_st.sort()
 
-    _obs_st.sort()
-    _syn_st.sort()
+    obs_st.resample(resamp)
+    syn_st.resample(resamp)
+    obs_st.filter('bandpass',freqmin=f1,freqmax=f2,corners=4,zerophase=True)
+    syn_st.filter('bandpass',freqmin=f1,freqmax=f2,corners=4,zerophase=True)
+    o_t0 = obs_st[0].stats.starttime
+    s_t0 = syn_st[0].stats.starttime
+    o_tN = o_t0 + tN
+    s_tN = s_t0 + tN
+    obs_st.trim(o_t0,o_tN)
+    syn_st.trim(s_t0,s_tN)
 
-    for i in range(len(_obs_st)):
+    for i in range(len(obs_st)):
 
-        assert _obs_st[i].stats.network == _syn_st[i].stats.network
-        assert _obs_st[i].stats.station == _syn_st[i].stats.station
-        assert _obs_st[i].stats.channel == _syn_st[i].stats.channel
+        assert obs_st[i].stats.network == syn_st[i].stats.network
+        assert obs_st[i].stats.station == syn_st[i].stats.station
+        assert obs_st[i].stats.channel == syn_st[i].stats.channel
 
-        o_t0 = _obs_st[i].times()[0]
-        o_tN = _obs_st[i].times()[-1]
-        o_dt = _obs_st[i].stats.delta
-
-        s_t0 = _syn_st[i].times()[0]
-        s_tN = _syn_st[i].times()[-1]
-        s_dt = _syn_st[i].stats.delta
-
-        assert o_t0 <= 0.0 and s_t0 <= 0.0
-
-        _tN = o_tN
-        if s_tN < _tN:
-            _tN = s_tN
-
-        _dt = o_dt
-        if s_dt < _dt:
-            _dt = s_dt
-
-        _filt_obs_st = bandpass_stream(_obs_st,f1,f2,nc=4)
-        _filt_syn_st = bandpass_stream(_syn_st,f1,f2,nc=4)
-        _filt_obs_st = trim_resample_stream(_filt_obs_st,_t0,_tN,_dt)
-        _filt_syn_st = trim_resample_stream(_filt_syn_st,_t0,_tN,_dt)
-
-    return (_filt_obs_st,_filt_syn_st)
+        o_tzero = obs_st[i].times()[0] 
+        o_tend  = obs_st[i].times()[-1] 
+        s_tzero = syn_st[i].times()[0] 
+        s_tend  = syn_st[i].times()[-1] 
+        assert o_tzero == 0.0 and s_tzero == 0.0
+        assert o_tend == s_tend
 
 
