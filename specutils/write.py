@@ -64,7 +64,7 @@ def write_stream_2_spec_ascii(st,ofqdpath,is_zne=False):
         for tr in st:
             spec_pair_list = [] #time,amplitude pairs
 
-            tr_spec_chan = tr.stats.channel
+            tr_spec_chan = '.' + tr.stats.channel + '.'
 
             if is_zne:
                 #Example of filename: 'NL.G094.FXX.semd'
