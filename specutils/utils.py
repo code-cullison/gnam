@@ -16,6 +16,7 @@ def trim_resample_stream(st,t0,tN,resamp):
         station = st[i].stats.station
         channel = st[i].stats.channel
         tr_str = station + '.' + channel
+        '''
         if t0 < _t0 or _tN < tN:
             print('There was an error trimming trace:',tr_str)
             print('f() t0:',t0)
@@ -25,9 +26,17 @@ def trim_resample_stream(st,t0,tN,resamp):
             print('f() dt:',dt)
             print('f() _dt:',_dt)
             assert False
+        '''
 
         if resamp != _resamp:
             st[i].resample(resamp)
+
+        if _tN < tN:
+            _count = st[i].count()
+            count  = int(tN*_resamp + 0.5)
+            npad   = count - _count
+            st[i].taper(max_percentage=1.0,max_length=1,type='slepian',width=0.25,side='right')
+            st[i].trim(_utc_t0+t0,_utc_t0+t0+tN,pad=True,fill_value=st[i].data[-1])
 
         st[i].trim(_utc_t0+t0,_utc_t0+t0+tN)
 

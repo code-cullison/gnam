@@ -11,34 +11,33 @@ import obspy
 from obspy import Stream
 from obspy import Trace
 
+
+
 def trim_resample_stream(st,t0,tN,resamp):
 
+    print('hello')
+    '''
     for i in range(len(st)):
 
         _resamp = st[i].stats.sampling_rate
         _utc_t0 = st[i].stats.starttime
-        _t0 = st[i].times()[0]
         _tN = st[i].times()[-1]
-
-        station = st[i].stats.station
-        channel = st[i].stats.channel
-        tr_str = station + '.' + channel
-        if t0 < _t0 or _tN < tN:
-            print('There was an error trimming trace:',tr_str)
-            print('f() t0:',t0)
-            print('f() _t0:',_t0)
-            print('f() tN:',tN)
-            print('f() _tN:',_tN)
-            print('f() dt:',dt)
-            print('f() _dt:',_dt)
-            assert False
 
         if resamp != _resamp:
             st[i].resample(resamp)
 
-        st[i].trim(_utc_t0+t0,_utc_t0+t0+tN)
+        if _tN < tN:
+            _count = st[i].count()
+            count  = int(tN*_resamp + 0.5)
+            npad   = count - _count
+            st[i].taper(max_percentage=1.0,max_length=1,type='slepian',width=0.25,side='right')
+            st[i].trim(_utc_t0+t0,_utc_t0+t0+tN,pad=True,fill_value=st[i].data[-1])
+        else:
+            st[i].trim(_utc_t0+t0,_utc_t0+t0+tN)
 
     return(_utc_t0+t0,_utc_t0+t0+tN)
+    '''
+
 
 def bandpass_stream(st,f1,f2,nc=4):
     st.filter('bandpass',freqmin=f1,freqmax=f2,corners=nc,zerophase=True)
