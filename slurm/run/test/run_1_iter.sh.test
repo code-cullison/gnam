@@ -1,0 +1,106 @@
+#!/bin/bash
+
+THISNAME=`echo $0 | rev | cut -d '/' -f1 | cut -d '.' -f2 | rev | cut -d '_' -f2,3`;
+
+###########################################
+#
+# Read arguments
+#
+###########################################
+
+SPEC_ARCH="CPU"
+SPEC_NPROC=1
+LOG_PATH="./"
+NPU=""
+PJID=""
+
+for i in "$@"; do
+  case $i in
+    -nCPU=*)
+    SPEC_NPROC="${i#*=}"
+    NPU="-nCPU=$SPEC_NPROC"
+    NCPU="SET"
+    ;;
+    -nGPU=*)
+    SPEC_NPROC="${i#*=}"
+    SPEC_ARCH="GPU"
+    NPU="-nGPU=$SPEC_NPROC"
+    NGPU="SET"
+    ;;
+    -lp=*)
+    LOG_PATH="${i#*=}"
+    ;;
+    -w=*)
+    PJID="${i#*=}"
+    ;;
+    *)
+    echo "unknown option"
+    exit 2;
+    ;;
+  esac
+done
+
+if [[ $NCPU == $NGPU ]]; then
+  echo "-nCPU and -nGPU cannot both be set at the same time.";
+  exit 2;
+fi
+
+LDATE=`date +.on.%F.at.%H:%M:%S`
+RLOG="${LOG_PATH}${THISNAME}${LDATE}.rlog"
+
+echo "source ../env/set_base_project_env.sh" >> $RLOG;
+source ../env/set_base_project_env.sh;
+
+###########################################
+#
+# Step-0: Forward Solver
+#
+###########################################
+
+#JNAME="fwd_solver";
+#PROG="../1_iter/0_fwd_solver_event.slurm";
+
+#if [[ ! -z $PJID ]]; then
+#  PJID="-w=afterok:$PJID";
+#fi
+
+#declare -A jobid_array
+#jid=0
+#for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
+#  RDIR=`echo "$dir" | rev | cut -d '/' -f2 | rev` >> $RLOG
+#  OLOG="0_${JNAME}_$RDIR.job.%N.%j.out"  #STDOUT Log
+#  ELOG="0_${JNAME}_$RDIR.job.%N.%j.err"  #STDERR Log
+#  echo "CJID=\$(./spec_sbatch.sh $PJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$RDIR)" >> $RLOG;
+#  CJID=$(./spec_sbatch.sh $PJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$RDIR);
+#  CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
+#  #CJID=$jid
+#  jobid_array+=([$RDIR]=$CJID)
+#  #((jid=jid+1))
+#  echo "add job to jobid_array[$RDIR] = ${jobid_array[$RDIR]}" >> $RLOG;
+#  echo "full jobid array: ${jobid_array[@]}" >> $RLOG;
+#done
+
+
+###########################################
+#
+# Step-1a: Filter OBSERVED DATA
+#
+###########################################
+#SJID=$CJID;
+#CJID="afterok:$CJID";
+
+JNAME="obs_filter_trim";
+OLOG="1a_${JNAME}.job.%N.%j.out";  # STDOUT
+ELOG="1a_${JNAME}.job.%N.%j.err";  # STDERR
+PROG="../1_iter/1a_obs_filter_trim_traces.slurm";
+
+#Note: that NPU is NOT passed as an argument
+echo "CJID=\$(./spec_sbatch.sh -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;
+CJID=$(./spec_sbatch.sh -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG);
+#echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;
+#CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG);
+
+CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
+CJID="$SJID:$CJID";
+
+echo "$CJID"

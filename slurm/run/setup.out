@@ -1,0 +1,141 @@
+
+Setup Project Directoies
+
+
+**  Make Project Root Directory  **
+
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0
+
+
+**  Make Mesh Directory  **
+
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/MESH-default
+
+
+**  Make pyutils and script links  **
+
+ln -s /quanta1/home/tcullison/myscripts/python/specfem/pyutils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/pyutils
+
+ln -s /quanta1/home/tcullison/myscripts/specfem /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/scriptutils
+
+
+**  Make Event Directories  **
+
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013
+
+**  Make Event Sub Directories and links  **
+
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//utils
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//DATA /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//OUTPUT_FILES
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//OUTPUT_FILES/DATABASES_MPI
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//SYN /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//SEM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//FILT_OBS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//FILT_SYN
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/bin /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//bin
+ln -s /quanta1/home/tcullison/DevGPU_specfem3d/utils /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//utils
+
+**  Make Base Event Directories  **
+
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/INPUT_GRADIENT /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/INPUT_KERNELS /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/INPUT_MODEL
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/OUTPUT_MODEL /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/OUTPUT_SUM
+mkdir /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/COMBINE /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/SMOOTH /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/topo
+
+**  Make Base Event links, and special files **
+
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/OUTPUT_FILES/DATABASES_MPI > /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0002//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0003//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0004//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0005//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0006//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0007//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0008//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0009//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0010//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0011//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0012//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+echo /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0013//OUTPUT_FILES/DATABASES_MPI >> /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/event_kernel_dirs.txt
+ln -s /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/SMOOTH /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/INPUT_KERNELS/event0001
+echo event0001 > /scratch/seismology/tcullison/test_mesh/Groningen_Ver-0/run0001/kernels_list.txt

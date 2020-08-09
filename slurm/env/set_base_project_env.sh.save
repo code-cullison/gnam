@@ -1,0 +1,7 @@
+#!/bin/bash
+export SPEC_PROJ_DIR="/scratch/seismology/tcullison/test_mesh/Project_Beta_3E";
+export MESH_DIR="${SPEC_PROJ_DIR}/MESH-default";
+export SPEC_GPU_BIN="/quanta1/home/tcullison/DevGPU_specfem3d";
+export SPEC_CPU_BIN="/quanta1/home/tcullison/DevGPU_specfem3d";
+export SPEC_PYUTILS="/quanta1/home/tcullison/DevGPU_specfem3d";
+export SPEC_SCRPUTL="/quanta1/home/tcullison/myscripts/specfem";

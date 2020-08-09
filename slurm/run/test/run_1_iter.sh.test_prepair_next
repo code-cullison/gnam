@@ -1,0 +1,73 @@
+#!/bin/bash
+
+THISNAME=`echo $0 | rev | cut -d '/' -f1 | cut -d '.' -f2 | rev | cut -d '_' -f2,3`;
+
+###########################################
+#
+# Read arguments
+#
+###########################################
+
+SPEC_ARCH="CPU"
+SPEC_NPROC=1
+SPEC_ITER=0
+LOG_PATH="./"
+NPU=""
+PJID=""
+
+for i in "$@"; do
+  case $i in
+    -nCPU=*)
+    SPEC_NPROC="${i#*=}"
+    NPU="-nCPU=$SPEC_NPROC"
+    NCPU="SET"
+    ;;
+    -nGPU=*)
+    SPEC_NPROC="${i#*=}"
+    SPEC_ARCH="GPU"
+    NPU="-nGPU=$SPEC_NPROC"
+    NGPU="SET"
+    ;;
+    -lp=*)
+    LOG_PATH="${i#*=}"
+    ;;
+    -w=*)
+    PJID="${i#*=}"
+    ;;
+    *)
+    echo "unknown option"
+    exit 2;
+    ;;
+  esac
+done
+
+if [[ $NCPU == $NGPU ]]; then
+  echo "-nCPU and -nGPU cannot both be set at the same time.";
+  exit 2;
+fi
+
+LDATE=`date +.on.%F.at.%H:%M:%S`
+RLOG="${LOG_PATH}${THISNAME}${LDATE}.rlog"
+
+echo "source ../env/set_base_project_env.sh" >> $RLOG;
+source ../env/set_base_project_env.sh;
+
+###########################################################
+#
+# Step-8: Prepare Next Iteration
+#
+###########################################################
+#CJID="afterok:$CJID"; 
+
+JNAME="prepair_next_iter";
+OLOG="8_${JNAME}.job.%N.%j.out";  # STDOUT
+ELOG="8_${JNAME}.job.%N.%j.err";  # STDERR
+PROG="../N_iter/8_prepair_next_iter.slurm";
+
+echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;
+CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG);
+
+echo "SLURM JOBID: $CJID" >> $RLOG;
+CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
+
+echo $CJID

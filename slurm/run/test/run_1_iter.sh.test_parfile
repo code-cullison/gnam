@@ -1,0 +1,79 @@
+#!/bin/bash
+
+THISNAME=`echo $0 | rev | cut -d '/' -f1 | cut -d '.' -f2 | rev | cut -d '_' -f2,3`;
+
+###########################################
+#
+# Read arguments
+#
+###########################################
+
+SPEC_ARCH="CPU"
+SPEC_NPROC=1
+LOG_PATH="./"
+NPU=""
+PJID=""
+
+for i in "$@"; do
+  case $i in
+    -nCPU=*)
+    SPEC_NPROC="${i#*=}"
+    NPU="-nCPU=$SPEC_NPROC"
+    NCPU="SET"
+    ;;
+    -nGPU=*)
+    SPEC_NPROC="${i#*=}"
+    SPEC_ARCH="GPU"
+    NPU="-nGPU=$SPEC_NPROC"
+    NGPU="SET"
+    ;;
+    -lp=*)
+    LOG_PATH="${i#*=}"
+    ;;
+    -w=*)
+    PJID="${i#*=}"
+    ;;
+    *)
+    echo "unknown option"
+    exit 2;
+    ;;
+  esac
+done
+
+if [[ $NCPU == $NGPU ]]; then
+  echo "-nCPU and -nGPU cannot both be set at the same time.";
+  exit 2;
+fi
+
+LDATE=`date +.on.%F.at.%H:%M:%S`
+RLOG="${LOG_PATH}${THISNAME}${LDATE}.rlog"
+
+echo "source ../env/set_base_project_env.sh" >> $RLOG;
+source ../env/set_base_project_env.sh;
+
+###########################################
+#
+# Step-0: Forward Solver
+#
+###########################################
+
+
+##------- Set SAVE_MESH = .false. ---------------------##
+
+#change_save_mesh.sh
+SJID=$CJID;
+CJID="afterok:$CJID";
+
+JNAME="save_mesh_eq_false";
+OLOG="parfile_0_${JNAME}.job.%N.%j.out";  # STDOUT
+ELOG="parfile_0_${JNAME}.job.%N.%j.err";  # STDERR
+PROG="../parfile/change_save_mesh.sh";
+
+#Note: that NPU is NOT passed as an argument
+#echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="false")" >> $RLOG;
+#CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="false");
+echo "CJID=\$(./spec_sbatch.sh -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="true")" >> $RLOG;
+CJID=$(./spec_sbatch.sh -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="true");
+#CJID="$SJID:$CJID";
+
+echo "$CJID"
