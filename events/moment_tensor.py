@@ -11,34 +11,41 @@ class moment_tensor:
 
 
     _data = None
-    _M0   = None
 
     _aki_tensor = None
     _cmt_tensor = None
 
-    def __init__(self,date,mag,lat,lon,x,y,z,sz,strike,dip,rake,iso,siso,cldv,scldv,M0=1.0):
+    def __init__(self,date,mag,lat,lon,x,y,z,sz,strike,dip,rake,iso,siso,cldv,scldv,M0=1.0,rdeg=0):
+
+        mod_strike = strike + rdeg
+        if 360 <= mod_strike:
+            mod_strike -= 360
+        elif mod_strike < 0:
+            mod_strike += 360
 
         self._data = {}
-        self._data['Date'     ] = UTCDateTime(date)
-        self._data['ML'       ] = mag
-        self._data['M0'       ] = M0
-        self._data['Lat'      ] = lat
-        self._data['Lon'      ] = lon
-        self._data['XC'       ] = x
-        self._data['YC'       ] = y
-        self._data['ZC'       ] = z
-        self._data['ZC +/-'   ] = sz
-        self._data['Strike'   ] = strike
-        self._data['Dip'      ] = dip
-        self._data['Rake'     ] = rake
-        self._data['ISO%'     ] = iso
-        self._data['ISO%  +/-'] = siso
-        self._data['CLDV%'    ] = cldv
-        self._data['CLDB% +/-'] = scldv
+        self._data['Date'      ] = UTCDateTime(date)
+        self._data['ML'        ] = mag
+        self._data['M0'        ] = M0
+        self._data['Lat'       ] = lat
+        self._data['Lon'       ] = lon
+        self._data['XC'        ] = x
+        self._data['YC'        ] = y
+        self._data['ZC'        ] = z
+        self._data['ZC +/-'    ] = sz
+        self._data['rotdeg'    ] = rdeg
+        self._data['o-Strike'  ] = strike
+        self._data['Strike'    ] = mod_strike
+        self._data['Dip'       ] = dip
+        self._data['Rake'      ] = rake
+        self._data['ISO%'      ] = iso
+        self._data['ISO%  +/-' ] = siso
+        self._data['CLDV%'     ] = cldv
+        self._data['CLDB% +/-' ] = scldv
 
 
         deg2rad = np.pi/180
-        rstrike = deg2rad*strike
+        rstrike = deg2rad*mod_strike
         rdip    = deg2rad*dip
         rrake   = deg2rad*rake
 
