@@ -14,13 +14,20 @@ class mtensors:
 
 
     _df    = None
-    _nmt   = 0
+    _nmt   = None
     _l_mts = None
+    _m_bb  = None
+    _rdeg  = None
 
-    def __init__(self,cvs_fname):
+    def __init__(self,cvs_fname,model_bb=None):
 
         self._df  = pd.io.parsers.read_csv(cvs_fname,sep=',',index_col=0)
         self._nmt = self._df.shape[0]
+
+        self._rdeg = 0
+        if model_bb != None:
+            self._m_bb = model_bb
+            self._rdeg = self._m_bb.getRotDeg()
 
         dates = self.get_dates()
         assert len(dates) == self._nmt
@@ -80,7 +87,7 @@ class mtensors:
             M0 = 10**p
             new_mt = moment_tensor(dates[m],mags[m],lats[m],lons[m],xc[m],    \
                                    yc[m],zc[m],zcb[m],strks[m],dips[m],       \
-                                   rakes[m],iso[m],isob[m],clvd[m],clvdb[m],M0)
+                                   rakes[m],iso[m],isob[m],clvd[m],clvdb[m],M0,self._rdeg)
             self._l_mts.append(new_mt)
 
 
@@ -162,30 +169,55 @@ class mtensors:
     def get_moment_tensor_list(self):
         return self._l_mts
 
-    def get_aki_beachballs(self,diam=50,fc='blue'):
+    def _get_beachballs(self,diam=50,fc='blue',is_aki=True,is_local=False):
 
         l_bball = []
         for imt in range(self._nmt):
-            mt = self._l_mts[imt].get_aki_tensor_utri()
+            if is_aki:
+                mt = self._l_mts[imt].get_aki_tensor_utri()
+            else:
+                mt = self._l_mts[imt].get_cmt_tensor_utri()
             xc = self._l_mts[imt]['XC']
             yc = self._l_mts[imt]['YC']
+            if is_local:
+                assert self._m_bb != None
+                xc, yc = self._m_bb.convert_extern_coords_2_local(xc,yc)
             #print('x,y = %f,%f' %(xc,yc))
             ball = beach(mt, xy=(xc, yc), width=diam, facecolor=fc)
             l_bball.append(ball)
 
         return l_bball
 
-    def get_cmt_beachballs(self,diam=50,fc='blue'):
+    def get_aki_beachballs(self,diam=50,fc='blue',is_local=False):
+        return self._get_beachballs(diam,fc,True,is_local)
 
-        l_bball = []
-        for imt in range(self._nmt):
-            mt = self._l_mts[imt].get_cmt_tensor_utri()
-            xc = self._l_mts[imt]['XC']
-            yc = self._l_mts[imt]['YC']
-            ball = beach(mt, xy=(xc, yc), width=diam, facecolor=fc)
-            l_bball.append(ball)
+    def get_cmt_beachballs(self,diam=50,fc='blue',is_local=False):
+        return self._get_beachballs(diam,fc,False,is_local)
 
-        return l_bball
+    #def get_aki_beachballs(self,diam=50,fc='blue'):
+
+        #l_bball = []
+        #for imt in range(self._nmt):
+            #mt = self._l_mts[imt].get_aki_tensor_utri()
+            #xc = self._l_mts[imt]['XC']
+            #yc = self._l_mts[imt]['YC']
+            ##print('x,y = %f,%f' %(xc,yc))
+            #ball = beach(mt, xy=(xc, yc), width=diam, facecolor=fc)
+            #l_bball.append(ball)
+
+        #return l_bball
+
+    #def get_cmt_beachballs(self,diam=50,fc='blue'):
+
+        #l_bball = []
+        #for imt in range(self._nmt):
+            #mt = self._l_mts[imt].get_cmt_tensor_utri()
+            #xc = self._l_mts[imt]['XC']
+            #yc = self._l_mts[imt]['YC']
+            #ball = beach(mt, xy=(xc, yc), width=diam, facecolor=fc)
+            #l_bball.append(ball)
+
+        #return l_bball
 
 
     def update_utcdatetime(self,ecat):
