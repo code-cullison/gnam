@@ -103,5 +103,14 @@ class bbox:
 
         return isin
 
+    def convert_extern_coords_2_local(self,xc,yc):
 
+        lx = xc - self._origin[0]
+        ly = yc - self._origin[1]
 
+        theta = -1*self._rotdeg*np.pi/180
+        rm = np.array([[np.cos(theta),-np.sin(theta)],[np.sin(theta),np.cos(theta)]])
+
+        lxy = rm.dot(np.array([lx,ly]))
+
+        return (lxy[0],lxy[1])
