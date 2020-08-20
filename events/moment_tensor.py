@@ -35,7 +35,7 @@ class moment_tensor:
         self._data['ZC +/-'    ] = sz
         self._data['rotdeg'    ] = rdeg
         self._data['o-Strike'  ] = strike
-        self._data['Strike'    ] = mod_strike
+        self._data['r-Strike'    ] = mod_strike
         self._data['Dip'       ] = dip
         self._data['Rake'      ] = rake
         self._data['ISO%'      ] = iso
