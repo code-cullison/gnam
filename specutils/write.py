@@ -86,13 +86,26 @@ def write_cmtsolution(fqpname,mt,lx,ly):
     f.close()
 
 
-def write_stream_2_spec_ascii(st,ofqdpath,is_zne=False):
+#def write_stream_2_spec_ascii(st,ofqdpath,is_zne=False):
+def write_stream_2_spec_ascii(st,ofqdpath,chanmap='FX#'):
+
+        assert len(chanmap) == 3
 
         for tr in st:
             spec_pair_list = [] #time,amplitude pairs
 
-            tr_spec_chan = '.' + tr.stats.channel + '.'
+            tr_spec_chan = tr.stats.channel
 
+            ochan = '.'
+            for ic in range(3):
+                if chanmap[ic] != '#':
+                    ochan += chanmap[ic]
+                else:
+                    ochan += tr_spec_chan[ic]
+            ochan += '.'
+            assert len(ochan) == 5
+
+            '''
             if is_zne:
                 #Example of filename: 'NL.G094.FXX.semd'
                 tr_spec_chan = '.BOO.'
@@ -106,8 +119,9 @@ def write_stream_2_spec_ascii(st,ofqdpath,is_zne=False):
                 else:
                     print('Uh-oh! Spaghetti Os!')
                     assert False
+            '''
 
-            tr_filename = 'NL.' + tr.stats.station + tr_spec_chan + 'semd'
+            tr_filename = 'NL.' + tr.stats.station + ochan + 'semd'
 
             for it in range(tr.count()):
                 spec_pair_list.append('%E   %E\n' %(tr.times()[it],tr.data[it]))
