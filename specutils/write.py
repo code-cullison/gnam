@@ -26,6 +26,33 @@ def write_stations(fqpname,gs,ekey,bkeys):
     f.writelines(str_stations)
     f.close()
 
+#FIXME: super ugley, but works for now
+def write_stations_except_for(fqpname,gs,ekey,bkeys,except_st):
+
+    str_stations = []
+    for bkey in bkeys:
+        station_codes  = gs.getIncStationCodes(ekey,bkey)
+        station_coords = gs.getLocalIncStationCoords(ekey,bkey)
+        stations       = gs.getIncludedStations(ekey,bkey)
+        
+        hdict = dict(zip(station_codes, station_coords))
+
+        for i in range(len(hdict)):
+            stat = station_codes[i]
+            burial = stations[i].channels[0].depth
+            #ugly
+            skip = False
+            for tr in except_st:
+                if tr.stats.station == stat:
+                    skip = True
+                    break
+            if not skip:
+                str_stations.append('%s %s %.2f %.2f %.2f %.2f\n' %(stat,'NL',hdict[stat][1],hdict[stat][0],0,burial))
+
+    f = open(fqpname, 'w')
+    f.writelines(str_stations)
+    f.close()
+
 
 def write_cmtsolution(fqpname,mt,lx,ly):
 
