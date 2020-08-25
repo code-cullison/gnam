@@ -23,6 +23,26 @@ echo "squeue -j $SLURM_JOB_ID:";
 echo "$(squeue -j ${SLURM_JOB_ID})";
 echo;
 
+##########################################################
+#
+# First: create and set the current_iteration.sh
+#
+##########################################################
+
+CUR_ITER_NUM=0
+echo;
+echo "Creating $EVENT_DIR/current_iteration.sh";
+echo;
+echo "echo #!/bin/bash > $EVENT_DIR/current_iteration.sh";
+echo "#!/bin/bash" > $EVENT_DIR/current_iteration.sh;
+echo "echo CUR_ITER_NUM=$CUR_ITER_NUM >> $EVENT_DIR/current_iteration.sh";
+echo "CUR_ITER_NUM=$CUR_ITER_NUM" >> $EVENT_DIR/current_iteration.sh;
+echo;
+echo;
+echo "Done..."
+echo "See results in directory: $EVENT_DIR/"
+echo `date`
+
 
 ####################################################################################
 
