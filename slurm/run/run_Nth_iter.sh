@@ -174,8 +174,8 @@ declare -A adj_jobid_array
 
 for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
   RDIR=`echo "$dir" | rev | cut -d '/' -f2 | rev` >> $RLOG
-  OLOG="3_${JNAME}_$RDIR.job.%N.%j.out"  #STDOUT Log
-  ELOG="3_${JNAME}_$RDIR.job.%N.%j.err"  #STDERR Log
+  OLOG="2_${JNAME}_$RDIR.job.%N.%j.out"  #STDOUT Log
+  ELOG="2_${JNAME}_$RDIR.job.%N.%j.err"  #STDERR Log
   echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$RDIR)" >> $RLOG;
   TJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$RDIR);
   echo "SLURM JOBID: $TJID" >> $RLOG;
@@ -304,7 +304,7 @@ JNAME="model_update";
 OLOG="7_${JNAME}.job.%N.%j.out";  # STDOUT
 ELOG="7_${JNAME}.job.%N.%j.err";  # STDERR
 PROG="../N_iter/7_model_update.slurm";
-STEP=0.5
+STEP=0.10
 
 echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$STEP)" >> $RLOG;
 CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$STEP);
@@ -363,7 +363,7 @@ CJID="afterok:$CJID";
 
 JNAME="next_gen_db_mpi";
 OLOG="9_${JNAME}.job.%N.%j.out";  # STDOUT
-ELOG="t9_${JNAME}.job.%N.%j.err";  # STDERR
+ELOG="9_${JNAME}.job.%N.%j.err";  # STDERR
 PROG="../N_iter/9_generate_databases.slurm";
 
 echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;

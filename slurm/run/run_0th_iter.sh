@@ -75,6 +75,40 @@ echo "SLURM JOBID: $CJID" >> $RLOG;
 CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
 
 
+##------- Second: Set NPROC = $SPEC_NPROC -------##
+
+CJID="afterok:$CJID";
+
+JNAME="chang_nrpoc";
+OLOG="parfile_0_${JNAME}.job.%N.%j.out";  # STDOUT
+ELOG="parfile_0_${JNAME}.job.%N.%j.err";  # STDERR
+PROG="../parfile/change_nproc.sh";
+
+#Note: that NPU is NOT passed as an argument
+echo "CJID=\$(./spec_sbatch.sh -$PJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="true")" >> $RLOG;
+CJID=$(./spec_sbatch.sh $PJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa=$SPEC_NPROC);
+
+echo "SLURM JOBID: $CJID" >> $RLOG;
+CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
+
+
+##------- Third: Set MODEL = default -------##
+
+CJID="afterok:$CJID";
+
+JNAME="chang_model";
+OLOG="parfile_0_${JNAME}.job.%N.%j.out";  # STDOUT
+ELOG="parfile_0_${JNAME}.job.%N.%j.err";  # STDERR
+PROG="../parfile/change_model.sh";
+
+#Note: that NPU is NOT passed as an argument
+echo "CJID=\$(./spec_sbatch.sh -$PJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="true")" >> $RLOG;
+CJID=$(./spec_sbatch.sh $PJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG -xa="default");
+
+echo "SLURM JOBID: $CJID" >> $RLOG;
+CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
+
+
 ##------- Decompose Mesh  ---------------------##
 
 CJID="afterok:$CJID";
