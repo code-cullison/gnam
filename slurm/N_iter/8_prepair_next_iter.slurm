@@ -40,7 +40,18 @@ echo;
 
 ####################################################################################
 
-# make vtk file for kernels
+echo;
+echo;
+echo "Renaming SYN DATA";
+echo;
+echo;
+for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
+  SDIR="${dir}/SYN"
+  DATA_CMD="ls $SDIR/*.semd" 
+  XARG_CMD="xargs -t -P0 -I {} mv ${SDIR}/{} ${SDIR}/{}.iter_${CUR_ITER_NUM}"
+  echo "${DATA_CMD} | ${XARG_CMD}";
+  echo `${DATA_CMD} | ${XARG_CMD}`;
+done
 echo;
 echo;
 echo "Renaming raw kernels";
@@ -122,5 +133,5 @@ echo "CUR_ITER_NUM=$NEW_ITER_NUM" >> $EVENT_DIR/current_iteration.sh;
 echo;
 echo;
 echo "Done..."
-echo "See results in directory: $EVENT_DIR/"
+echo "See results in directory: $SPEC_PROJ_DIR"
 echo `date`

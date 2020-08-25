@@ -20,6 +20,10 @@ source ../env/set_project_modules.sh;
 
 echo "cd $SPEC_PROJ_DIR;"
 cd $SPEC_PROJ_DIR;
+echo "pwd"'
+echo `pwd`'
+echo "ls pyutils/rwftr.py";
+ls pyutils/rwftr.py;
 
 ##*****************************************##
 
