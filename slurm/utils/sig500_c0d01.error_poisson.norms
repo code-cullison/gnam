@@ -1,0 +1,83 @@
+
+
+Number of events to sum NORMS from: 3
+
+Number of log files: 18
+
+-------------------------------------------------------------------------------
+ Iteration 1:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node005.3244211.out
+../logs/2_create_adj_srcs_run0003.job.node017.3244213.out
+../logs/2_create_adj_srcs_run0002.job.node016.3244212.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 2.22948e-08
+
+-------------------------------------------------------------------------------
+ Iteration 2:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node005.3244232.out
+../logs/2_create_adj_srcs_run0002.job.node016.3244233.out
+../logs/2_create_adj_srcs_run0003.job.node017.3244234.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 1.08869e-08
+
+-------------------------------------------------------------------------------
+ Iteration 3:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node007.3244253.out
+../logs/2_create_adj_srcs_run0003.job.node015.3244255.out
+../logs/2_create_adj_srcs_run0002.job.node010.3244254.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 5.08243e-09
+
+-------------------------------------------------------------------------------
+ Iteration 4:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node007.3244274.out
+../logs/2_create_adj_srcs_run0003.job.node014.3244276.out
+../logs/2_create_adj_srcs_run0002.job.node010.3244275.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 3.20278e-09
+
+-------------------------------------------------------------------------------
+ Iteration 5:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0002.job.node010.3244296.out
+../logs/2_create_adj_srcs_run0001.job.node007.3244295.out
+../logs/2_create_adj_srcs_run0003.job.node014.3244297.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 2.8864e-09
+
+-------------------------------------------------------------------------------
+ Iteration 6:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0003.job.node014.3244318.out
+../logs/2_create_adj_srcs_run0001.job.node007.3244316.out
+../logs/2_create_adj_srcs_run0002.job.node010.3244317.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 2.70581e-09
+
+
+-------------------------------------------------------------------------------
+ All **-NORMS-** (diff squared) in order:
+
+ 2.22948e-08
+ 1.08869e-08
+ 5.08243e-09
+ 3.20278e-09
+ 2.8864e-09
+ 2.70581e-09
+

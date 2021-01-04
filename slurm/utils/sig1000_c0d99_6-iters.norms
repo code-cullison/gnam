@@ -1,0 +1,71 @@
+
+
+Number of events to sum NORMS from: 3
+
+Number of log files: 15
+
+-------------------------------------------------------------------------------
+ Iteration 1:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0003.job.node021.3244820.out
+../logs/2_create_adj_srcs_run0001.job.node018.3244818.out
+../logs/2_create_adj_srcs_run0002.job.node019.3244819.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 2.22947e-08
+
+-------------------------------------------------------------------------------
+ Iteration 2:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node018.3244850.out
+../logs/2_create_adj_srcs_run0003.job.node021.3244852.out
+../logs/2_create_adj_srcs_run0002.job.node019.3244851.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 1.05865e-08
+
+-------------------------------------------------------------------------------
+ Iteration 3:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node015.3244871.out
+../logs/2_create_adj_srcs_run0003.job.node018.3244873.out
+../logs/2_create_adj_srcs_run0002.job.node016.3244872.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 4.85826e-09
+
+-------------------------------------------------------------------------------
+ Iteration 4:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node015.3244890.out
+../logs/2_create_adj_srcs_run0002.job.node016.3244891.out
+../logs/2_create_adj_srcs_run0003.job.node018.3244892.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 4.23211e-09
+
+-------------------------------------------------------------------------------
+ Iteration 5:
+
+ Adjoint files to parse for objective function norm:
+../logs/2_create_adj_srcs_run0001.job.node015.3244909.out
+../logs/2_create_adj_srcs_run0002.job.node016.3244910.out
+../logs/2_create_adj_srcs_run0003.job.node018.3244911.out
+
+ Total **-NORM-** (diff squared) for this iteration:
+ 3.30561e-09
+
+
+-------------------------------------------------------------------------------
+ All **-NORMS-** (diff squared) in order:
+
+ 2.22947e-08
+ 1.05865e-08
+ 4.85826e-09
+ 4.23211e-09
+ 3.30561e-09
+
