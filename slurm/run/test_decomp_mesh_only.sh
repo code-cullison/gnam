@@ -126,46 +126,6 @@ echo "SLURM JOBID: $CJID" >> $RLOG;
 CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
 
 
-###########################################
-#
-# Step-1: Generate Databases (MPI)
-#
-###########################################
-CJID="afterok:$CJID";
-
-JNAME="gen_db_mpi";
-OLOG="1_${JNAME}.job.%N.%j.out";  # STDOUT
-ELOG="1_${JNAME}.job.%N.%j.err";  # STDERR
-PROG="../0_iter/1_generate_databases.slurm";
-
-#Note: that NPU IS passed as and argument
-echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;
-CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG $NPU -lp=$LOG_PATH -jn=$JNAME -x=$PROG);
-
-echo "SLURM JOBID: $CJID" >> $RLOG;
-CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
-
-
-###########################################
-#
-# Step-2: Create links to Databases
-#
-###########################################
-CJID="afterok:$CJID";
-
-JNAME="create_db_links";
-OLOG="2_${JNAME}.job.%N.%j.out";  # STDOUT
-ELOG="2_${JNAME}.job.%N.%j.err";  # STDERR
-PROG="../0_iter/2_create_db_mpi_links.slurm";
-
-#Note: that NPU is NOT passed as and argument
-echo "CJID=\$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG)" >> $RLOG;
-CJID=$(./spec_sbatch.sh -w=$CJID -o=$OLOG -e=$ELOG -lp=$LOG_PATH -jn=$JNAME -x=$PROG);
-
-echo "SLURM JOBID: $CJID" >> $RLOG;
-CJID=`echo ${CJID} | rev | cut -d ' ' -f1 | rev`;
-
-
 ################################################################
 #
 # Final-Step: echo SLURM Job ID's still to be waited on.

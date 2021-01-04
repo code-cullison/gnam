@@ -47,10 +47,15 @@ for i in "$@"; do
     ;;
     -nGPU=*)
     SPEC_NPROC="${i#*=}"
-    SPEC_NODES=$SPEC_NPROC
+    #FIXME
+    #SPEC_NODES=$SPEC_NPROC
+    SPEC_NODES=1
+    SPEC_NTPN="--ntasks-per-node=$SPEC_NPROC"
+    echo " ******** ntaskts-per-node=$SPEC_NTPN ********";
     SPEC_ARCH="GPU"
-    SPEC_PART="--partition=gpu"
-    SPEC_GRES="--gres=gpu"
+    #FIXME
+    SPEC_PART="--partition=allq"
+    SPEC_GRES="--gres=gpu:2"
     NGPU="SET"
     ;;
     -lp=*)
@@ -116,9 +121,14 @@ SBLOG="${LOG_PATH}${JOB_NAME}${LDATE}.sblog"
 echo "source ../env/set_base_project_env.sh" > ${SBLOG};
 source ../env/set_base_project_env.sh;
 
+#FIXME
+SB_NLIST="--nodelist=gpu039"
+echo " ******** AGAIN ntasks-per-node=$SPEC_NTPN ********";
 
 SB_ARGS="-n $SPEC_NPROC"
 SB_ARGS="${SB_ARGS} -N $SPEC_NODES"
+#FIXME
+SB_ARGS="${SB_ARGS} $SB_NLIST"
 SB_ARGS="${SB_ARGS} $SPEC_NTPN"
 SB_ARGS="${SB_ARGS} $SPEC_THPC"
 SB_ARGS="${SB_ARGS} $SPEC_PART"
