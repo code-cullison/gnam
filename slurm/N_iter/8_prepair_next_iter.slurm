@@ -66,12 +66,12 @@ for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
   XARG_CMD="xargs -t -P0 -I {} mv ${KDIR}/{}.bin ${KDIR}/{}_iter_${CUR_ITER_NUM}.bin"
   echo "${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
   echo `${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-  echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-  echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-  echo "${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-  echo `${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-  echo "${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-  echo `${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+  #echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+  #echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+  #echo "${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+  #echo `${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+  #echo "${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+  #echo `${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
 done
 echo;
 echo;
@@ -85,15 +85,15 @@ HESS_CMD="ls $SMOOTH_DIR/proc*_hess_kernel_smooth.bin"
 XARG_CMD="xargs -t -P0 -I {} mv ${SMOOTH_DIR}/{}.bin ${SMOOTH_DIR}/{}_iter_${CUR_ITER_NUM}.bin"
 echo "${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
 echo `${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-echo "${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-echo `${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-echo "${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-echo `${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+#echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+#echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+#echo "${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+#echo `${RHO_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+#echo "${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+#echo `${HESS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
 echo;
 echo;
-echo "Renaming modle model binaries";
+echo "Renaming model model binaries";
 echo;
 echo;
 VP_CMD="ls $DB_MPI_DIR/proc*_vp.bin"
@@ -102,25 +102,29 @@ RH_CMD="ls $DB_MPI_DIR/proc*_rho.bin"
 XARG_CMD="xargs -t -P0 -I {} mv $DB_MPI_DIR/{}.bin $DB_MPI_DIR/{}_iter_${CUR_ITER_NUM}.bin"
 echo "${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
 echo `${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-echo "${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-echo `${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
-echo "${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
-echo `${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+#echo "${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+#echo `${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+#echo "${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+#echo `${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
 echo;
 echo;
-echo "Move updated model binaries to $DB_MPI_DIR";
+echo "Copying update model model binaries";
 echo;
 echo;
-VP_CMD="ls $OMOD_DIR/proc*_vp_new.bin"
-VS_CMD="ls $OMOD_DIR/proc*_vs_new.bin"
-RH_CMD="ls $OMOD_DIR/proc*_rho_new.bin"
-XARG_CMD="xargs -t -P0 -I {} mv $OMOD_DIR/{}_new.bin $DB_MPI_DIR/{}.bin"
-echo "${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
-echo `${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
-echo "${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
-echo `${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
-echo "${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
-echo `${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
+for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
+  E_DB_MPI_DIR="${dir}/OUTPUT_FILES/DATABASES_MPI"
+  echo "Copy updated model binaries to $E_DB_MPI_DIR" 
+  VP_CMD="ls $OMOD_DIR/proc*_vp_new.bin"
+  VS_CMD="ls $OMOD_DIR/proc*_vs_new.bin"
+  RH_CMD="ls $OMOD_DIR/proc*_rho_new.bin"
+  XARG_CMD="xargs -t -P0 -I {} cp $OMOD_DIR/{}_new.bin $E_DB_MPI_DIR/{}.bin"
+  echo "${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
+  echo `${VP_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
+  #echo "${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
+  #echo `${VS_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
+  #echo "${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}";
+  #echo `${RH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '_' -f1,2 | ${XARG_CMD}`;
+done
 echo;
 echo;
 NEW_ITER_NUM=$((CUR_ITER_NUM+=1))

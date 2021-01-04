@@ -20,7 +20,8 @@ source ../env/set_project_mpirun.sh;
 
 #set local project dir names
 export EVENT_DIR="${SPEC_PROJ_DIR}/run0001"
-export DATA_DIR="${EVENT_DIR}/DATA"
+export IDIR="${SPEC_PROJ_DIR}/run0001/SMOOTH"
+export ODIR="${SPEC_PROJ_DIR}/run0001/OUTPUT_SUM"
 
 
 ####################################################################################
@@ -28,15 +29,23 @@ export DATA_DIR="${EVENT_DIR}/DATA"
 # make vtk file for kernels
 echo;
 echo;
-echo "Preconditioning Each Kernel Subdomain (post summing over events)...";
+echo "Soft link clipped and smoothed kenels to OUTPUT_SUM...";
 echo;
 echo "cd $EVENT_DIR;"
 cd $EVENT_DIR;
 echo;
 
 
-echo "$MPIRUN ./bin/xsum_preconditioned_kernels";
-$MPIRUN ./bin/xsum_preconditioned_kernels;
+ALPH_CMD="ls $IDIR/proc*_alpha_kernel.bin"
+BETA_CMD="ls $IDIR/proc*_beta_kernel.bin"
+RHO_CMD="ls $IDIR/proc*_rho_kernel.bin"
+XARG_CMD="xargs -t -P0 -I {} ln -srf $IDIR/{} $ODIR/{}"
+echo "${ALPH_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}";
+echo `${ALPH_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}`;
+echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}";
+echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}`;
+echo "${RHO_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}";
+echo `${RHO_CMD} | rev | cut -d '/' -f1 | rev | ${XARG_CMD}`;
 
 
 echo;

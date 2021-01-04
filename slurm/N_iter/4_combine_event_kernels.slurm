@@ -21,13 +21,14 @@ source ../env/set_project_mpirun.sh;
 #set local project dir names
 export EVENT_DIR="${SPEC_PROJ_DIR}/run0001"
 export DATA_DIR="${EVENT_DIR}/DATA"
+export IKERN_DIR="${EVENT_DIR}/INPUT_KERNELS"
 
 ####################################################################################
 
 # make vtk file for kernels
 echo;
 echo;
-echo "Combining Kernel Subdomains from all events...";
+echo "Sum Over all Events Per Kernel Subdomain... ";
 echo;
 echo "cd $EVENT_DIR;"
 cd $EVENT_DIR;
@@ -47,6 +48,15 @@ ODIR="$EVENT_DIR/COMBINE"
 
 echo "$MPIRUN ./bin/xcombine_sem $KNAME $IFILE $ODIR";
 $MPIRUN ./bin/xcombine_sem $KNAME $IFILE $ODIR;
+echo;
+
+
+echo;
+#Make the link and kernels_list.txt needed for precondition combine
+echo "echo event0001 > kernels_list.txt";
+echo "event0001" > kernels_list.txt;
+echo "ln -srf $EVENT_DIR/SMOOTH $IKERN_DIR/event0001";
+ln -srf $EVENT_DIR/SMOOTH $IKERN_DIR/event0001;
 echo;
 
 

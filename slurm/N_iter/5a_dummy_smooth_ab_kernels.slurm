@@ -28,30 +28,25 @@ export IKER_DIR="${EVENT_DIR}/INPUT_KERNELS/event0001"
 # make vtk file for kernels
 echo;
 echo;
-echo "Smoothing Kernel Subdomains...";
+echo "Dummy Smoothing Kernel Subdomains...";
 echo;
 echo "cd $EVENT_DIR;"
 cd $EVENT_DIR;
 echo;
 
-SIG_H=1000
-SIG_V=1000
 IDIR=$EVENT_DIR/COMBINE
 ODIR=$EVENT_DIR/SMOOTH
 
-echo "$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V alpha_kernel $IDIR $ODIR true"; 
-$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V alpha_kernel $IDIR $ODIR true; 
-echo;
-#echo "$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V alpha_kernel_clip $IDIR $ODIR true"; 
-#$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V alpha_kernel_clip $IDIR $ODIR true; 
-#echo;
+# just copy non-smoothed kernels and call them smooth
+ALPH_CMD="ls $IDIR/proc*_alpha_kernel.bin" 
+BETA_CMD="ls $IDIR/proc*_beta_kernel.bin" 
+XARG_CMD="xargs -t -P0 -I {} cp $IDIR/{}.bin $ODIR/{}_smooth.bin"
+echo "${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+echo `${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
+echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
+echo `${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
 
-echo "$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V beta_kernel $IDIR $ODIR true"; 
-$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V beta_kernel $IDIR $ODIR true; 
 echo;
-#echo "$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V beta_kernel_clip $IDIR $ODIR true"; 
-#$MPIRUN ./bin/xsmooth_sem $SIG_H $SIG_V beta_kernel_clip $IDIR $ODIR true; 
-#echo;
 echo;
 echo;
 echo;

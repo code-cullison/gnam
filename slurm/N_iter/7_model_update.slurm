@@ -29,7 +29,8 @@ export DB_MPI_DIR="${OF_DIR}/DATABASES_MPI"
 export DATA_DIR="${EVENT_DIR}/DATA"
 export IGRAD_DIR="${EVENT_DIR}/INPUT_GRADIENT"
 export IMOD_DIR="${EVENT_DIR}/INPUT_MODEL"
-export COMB_DIR="${EVENT_DIR}/COMBINE"
+#export COMB_DIR="${EVENT_DIR}/COMBINE"
+export OSUM_DIR="${EVENT_DIR}/OUTPUT_SUM"
 
 ####################################################################################
 
@@ -43,10 +44,10 @@ cd $EVENT_DIR;
 echo;
 echo;
 #Setup links
-ALPH_CMD="ls $COMB_DIR/proc*_alpha_kernel.bin" 
-BETA_CMD="ls $COMB_DIR/proc*_beta_kernel.bin" 
-RHO_CMD="ls $COMB_DIR/proc*_rho_kernel.bin" 
-XARG_CMD="xargs -t -P0 -I {} ln -srf $COMB_DIR/{}.bin $IGRAD_DIR/{}_smooth.bin"
+ALPH_CMD="ls $OSUM_DIR/proc*_alpha_kernel.bin" 
+BETA_CMD="ls $OSUM_DIR/proc*_beta_kernel.bin" 
+RHO_CMD="ls $OSUM_DIR/proc*_rho_kernel.bin" 
+XARG_CMD="xargs -t -P0 -I {} ln -srf $OSUM_DIR/{}.bin $IGRAD_DIR/{}_smooth.bin"
 echo "${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";
 echo `${ALPH_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}`;
 echo "${BETA_CMD} | rev | cut -d '/' -f1 | rev | cut -d '.' -f1 | ${XARG_CMD}";

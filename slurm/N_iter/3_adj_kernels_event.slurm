@@ -20,6 +20,7 @@ source ../env/set_project_mpirun.sh;
 
 #set local project dir names
 export EVENT_DIR="${SPEC_PROJ_DIR}/$1"
+export OF_DIR="${EVENT_DIR}/OUTPUT_FILES"
 export DATA_DIR="${EVENT_DIR}/DATA"
 
 ####################################################################################
@@ -43,14 +44,39 @@ $MPIRUN ./bin/xspecfem3D;
 # checks exit code
 if [[ $? -ne 0 ]]; then 
   echo;
-  echo "There was an error running xspecfem3D";
+  echo "There was an error changing the simulation type";
   exit 1; 
 else
   echo;
-  echo "xspecfem3D completed successfully";
+  echo "Simulation type changed successfully";
 fi
 
-####################################################################################
+
+##*****************************************##
+
+# Rename Last Timestamp
+
+echo;
+TOMODIR="${SPEC_PROJ_DIR}/run0001"
+ITERNUM=$(cat ${TOMODIR}/current_iteration.sh | grep CUR_ITER_NUM | cut -d '=' -f2)
+echo "\\ls $OF_DIR/timestamp0* | tail -1 | rev | cut -d '/' -f1 | rev | xargs -t -P0 -I {} cp $OF_DIR/{} $OF_DIR/adj.iter_${ITERNUM}.{}";
+\ls $OF_DIR/timestamp0* | tail -1 | rev | cut -d '/' -f1 | rev | xargs -t -P0 -I {} cp $OF_DIR/{} $OF_DIR/adj.iter_${ITERNUM}.{};
+echo;
+
+# checks exit code
+if [[ $? -ne 0 ]]; then 
+  echo;
+  echo "There was an error copying the timestamp";
+  exit 1; 
+else
+  echo;
+  echo "Timestamp copy completed successfully";
+fi
+
+
+##*****************************************##
+
+# Save Par_file for record keeping
 
 echo
 echo "ls $DATA_DIR/Par_file";

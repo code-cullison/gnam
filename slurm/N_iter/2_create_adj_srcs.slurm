@@ -30,7 +30,8 @@ cd $EVENT_DIR;
 echo;
 
 XPROG=bin/xcreate_adjsrc_waveform
-IFILE=0
+#IFILE=0
+IFILE=3 #HOPEFULY creates zeros for X and Y comps
 WIN_DIR=OBS
 OBS_DIR=FILT_OBS
 SYN_DIR=FILT_SYN
@@ -46,8 +47,10 @@ for f in $WIN_DIR/NL.G*.window; do
     F_EAST_X=$SYN_DIR/${STATION}.FXX.semd 
     F_NORTH_Y=$SYN_DIR/${STATION}.FXY.semd 
     F_Z=$SYN_DIR/${STATION}.FXZ.semd 
-    echo "$XPROG $T0 $T1 $IFILE $F_EAST_X $F_NORTH_Y $F_Z $OBS_DIR";
-    $XPROG $T0 $T1 $IFILE $F_EAST_X $F_NORTH_Y $F_Z $OBS_DIR;
+    #echo "$XPROG $T0 $T1 $IFILE $F_EAST_X $F_NORTH_Y $F_Z $OBS_DIR";
+    #$XPROG $T0 $T1 $IFILE $F_EAST_X $F_NORTH_Y $F_Z $OBS_DIR;
+    echo "$XPROG $T0 $T1 $IFILE $F_Z $OBS_DIR";
+    $XPROG $T0 $T1 $IFILE $F_Z $OBS_DIR;
 done
 
 # checks exit code
