@@ -11,10 +11,16 @@ NPROC=$1
 
 
 for dir in ${SPEC_PROJ_DIR}/run[0-9][0-9][0-9][0-9]/; do
-  TPFILE="$dir/Data/Par_file"
+  TPFILE="$dir/DATA/Par_file"
+  DATA_DIR="${dir}/DATA"
+
+  echo;
+  echo "New NPROC = $NPROC";
+  echo "DATA_DIR  = $DATA_DIR";
+  echo;
 
   echo "\$sed -e s#^NPROC.*#NPROC = $NPROC #g < $TPFILE > ${DATA_DIR}/tmp_Parfile";
-  $sed -e "s#^NPROC.*#NPROC = $NPROC #g" < $TPFILE > ${DATA_DIR}/tmp_Parfile; 
+  sed -e "s#^NPROC.*#NPROC = $NPROC #g" < $TPFILE > ${DATA_DIR}/tmp_Parfile; 
 
   echo "mv ${DATA_DIR}/tmp_Parfile $TPFILE";
   mv ${DATA_DIR}/tmp_Parfile $TPFILE;
