@@ -3,6 +3,8 @@ from scipy.interpolate import RegularGridInterpolator
 from scipy.ndimage import gaussian_filter1d
 import time
 import copy
+from tqdm import trange, tqdm_notebook
+from time import sleep
 
 class gridmod3d:
 
@@ -538,7 +540,7 @@ class gridmod3d:
         if not x_only:
             assert self._axorder['X'] == 2
 
-        print('Smoothing in x-direction (sigma=%f)' %x_sig)
+#         print('Smoothing in x-direction (sigma=%f)' %x_sig)
 
         save_axorder = self._axorder.copy()
         if x_only:
@@ -547,17 +549,17 @@ class gridmod3d:
         ny = self._npoints[1]
         nz = self._npoints[2]
         perc_10 = int(nz/10 + 0.5)
-        for ip in range(self._nprops):
+        for ip in tqdm_notebook(range(self._nprops),desc="smoothing X"):
         #for iz in range(nz):
-            for iz in range(nz):
+            for iz in tqdm_notebook(range(nz),desc="iterate in ZY",leave=False):
             #for iy in range(ny):
                 for iy in range(ny):
                 #for ip in range(self._nprops):
                     self._subprops[ip,iz,iy,:] = gaussian_filter1d(self._subprops[ip,iz,iy,:], x_sig) #VP
-            if (iz % perc_10) == 0:
-                print('Currently %d percent finished smoothing in x-direction' % int((iz//perc_10)*10))
-        print('Currently 100 percent finished smoothing in x-direction')
-        print()
+#             if (iz % perc_10) == 0:
+#                 print('Currently %d percent finished smoothing in x-direction' % int((iz//perc_10)*10))
+#         print('Currently 100 percent finished smoothing in x-direction')
+#         print()
 
         if x_only:
             self.changeAxOrder(save_axorder)
@@ -567,7 +569,7 @@ class gridmod3d:
         if not y_only:
             assert self._axorder['Y'] == 2
 
-        print('Smoothing in y-direction (sigma=%f)' %y_sig)
+#         print('Smoothing in y-direction (sigma=%f)' %y_sig)
 
         save_axorder = self._axorder.copy()
         if y_only:
@@ -576,17 +578,17 @@ class gridmod3d:
         nx = self._npoints[0]
         nz = self._npoints[2]
         perc_10 = int(nx/10 + 0.5)
-        for ip in range(self._nprops):
+        for ip in tqdm_notebook(range(self._nprops),desc="smoothing Y"):
         #for ix in range(nx):
-            for ix in range(nx):
+            for ix in tqdm_notebook(range(nx),desc="iterate in XZ",leave=False):
             #for iz in range(nz):
                 for iz in range(nz):
                 #for ip in range(self._nprops):
                     self._subprops[ip,ix,iz,:] = gaussian_filter1d(self._subprops[ip,ix,iz,:], y_sig)
-            if (ix % perc_10) == 0:
-                print('Currently %d percent finished smoothing in y-direction' % int((ix//perc_10)*10))
-        print('Currently 100 percent finished smoothing in y-direction')
-        print()
+#             if (ix % perc_10) == 0:
+#                 print('Currently %d percent finished smoothing in y-direction' % int((ix//perc_10)*10))
+#         print('Currently 100 percent finished smoothing in y-direction')
+#         print()
 
         if y_only:
             self.changeAxOrder(save_axorder)
@@ -596,7 +598,7 @@ class gridmod3d:
         if not z_only:
             assert self._axorder['Z'] == 2
 
-        print('Smoothing in z-direction (sigma=%f)' %z_sig)
+#         print('Smoothing in z-direction (sigma=%f)' %z_sig)
 
         save_axorder = self._axorder.copy()
         if z_only:
@@ -605,17 +607,17 @@ class gridmod3d:
         nx = self._npoints[0]
         ny = self._npoints[1]
         perc_10 = int(nx/10 + 0.5)
-        for ip in range(self._nprops):
+        for ip in tqdm_notebook(range(self._nprops),desc="smoothing Z"):
         #for ix in range(nx):
-            for ix in range(nx):
+            for ix in tqdm_notebook(range(nx),desc="iterate in XY",leave=False):
             #for iy in range(ny):
                 for iy in range(ny):
                 #for ip in range(self._nprops):
                     self._subprops[ip,ix,iy,:] = gaussian_filter1d(self._subprops[ip,ix,iy,:], z_sig)
-            if (ix % perc_10) == 0:
-                print('Currently %d percent finished smoothing in z-direction' % int((ix//perc_10)*10))
-        print('Currently 100 percent finished smoothing in z-direction')
-        print()
+#             if (ix % perc_10) == 0:
+#                 print('Currently %d percent finished smoothing in z-direction' % int((ix//perc_10)*10))
+#         print('Currently 100 percent finished smoothing in z-direction')
+#         print()
 
         if z_only:
             self.changeAxOrder(save_axorder)
