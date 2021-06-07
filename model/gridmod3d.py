@@ -5,6 +5,8 @@ import time
 import copy
 from tqdm import trange, tqdm_notebook
 from time import sleep
+import matplotlib.pyplot as plt #add to module
+import matplotlib.patches as patches#add to module
 
 class gridmod3d:
 
@@ -648,4 +650,207 @@ class gridmod3d:
         return self._gorigin
 
     #def sliceVolumeGrid3D(rdeg,rnxyz,roxyz,rdxyz):
+    
+    
+    #Function to QC data
+    def QCvolume(self,xslice,yslice,zslice):
+        
+        #create coordinate array
+        xcordn = self.getLocalCoordsPointsX()+self.get_gorigin()[0]
+        ycordn = self.getLocalCoordsPointsY()+self.get_gorigin()[1]
+        zcordn = self.getLocalCoordsPointsZ()+self.get_gorigin()[2]
+        
+        idxcor = (np.abs(xcordn - xslice)).argmin()
+        validxcor = xcordn[idxcor]
 
+        idycor = (np.abs(ycordn - yslice)).argmin()
+        validycor = ycordn[idycor]
+
+        idzcor = (np.abs(zcordn - zslice)).argmin()
+        validzcor = zcordn[idzcor]
+        
+        
+        #create figure
+        fig = plt.figure(figsize=(5,5),dpi = 300,constrained_layout=True)
+        gs  = fig.add_gridspec(2, 2)
+
+        gxyc = self.getGlobalCoordsPointsXY()
+        sname = ('Vp','Vs','Density','Q')
+        slabel = ('m/s','m/s','kg/m$^3$','Q')
+        t = -1
+        
+        dummyvol = self.getNPArray()
+        
+        for i in range(2):
+            for j in range(2):
+                ax = fig.add_subplot(gs[i,j])
+                ax.tick_params(axis='both', which='major', labelsize=6)
+                ax.tick_params(axis='both', which='minor', labelsize=6)
+
+                plt.style.use('seaborn-pastel') 
+                plt.rcParams.update({'font.size': 6})
+                plt.rcParams["font.family"] = "serif"
+
+                t +=1
+                dummysurface = np.flipud(dummyvol[t,:,:,idzcor].T)
+
+                #plot surface
+                plt.imshow(dummysurface,cmap="gist_earth",extent=[gxyc[:,0][0],gxyc[:,0][-1],gxyc[:,1][0],gxyc[:,1][-1]])
+                plt.axhline(validycor,color='red')
+                plt.axvline(validxcor,color='blue')
+
+                plt.colorbar(extend='both', aspect=40,orientation='horizontal',pad=0.0075,shrink=0.8,label=slabel[t])
+                plt.xlabel('x [m]')
+                plt.ylabel('y [m]')
+                plt.yticks(rotation=90,va='center') 
+                plt.locator_params(nbins=3)
+                plt.title(sname[t])
+
+        fig.suptitle('Horizontal slice at '+str(validzcor)+'km') 
+        plt.show()
+
+        #determine the slice based on x and y
+        slicey = dummyvol[0,idxcor,:,:].T
+        slicex = dummyvol[0,:,idycor,:].T
+
+        #create figure
+        fig = plt.figure(figsize=(7,5),dpi=300,constrained_layout=True)
+
+        gs  = fig.add_gridspec(2,1)
+
+        #create xslice based on y
+        ax = fig.add_subplot(gs[0,0])
+        ax.spines['top'].set_color('red')
+        ax.spines['top'].set_linewidth(2)
+
+        plt.imshow(slicex,cmap="gist_earth",aspect='auto',
+                  extent=[xcordn[0],xcordn[-1],zcordn[-1],zcordn[0]])
+        ax.set_xlabel('x [m]')
+        ax.set_ylabel('z [m]')
+
+        plt.clim(np.min(slicey), np.max(slicey))
+
+
+        #create yslice based on x
+        ax = fig.add_subplot(gs[1,0])
+        ax.spines['top'].set_color('blue')
+        ax.spines['top'].set_linewidth(2)
+
+        ps = ax.imshow(slicey,cmap="gist_earth",aspect='auto',
+                  extent=[ycordn[0],ycordn[-1],zcordn[-1],zcordn[0]])
+        ax.set_xlabel('x [m]')
+        ax.set_ylabel('y [m]')
+        plt.clim(np.min(slicey), np.max(slicey))
+        plt.colorbar(ps , extend='both', aspect=25,orientation='horizontal',pad=0.0075,shrink=0.3,label='vp [m/s]')
+        fig.suptitle('Vp vertical slice at x = '+str(validxcor)+' & y = '+str(validycor)) 
+        plt.show()
+          
+    
+    #Function to QC and slice based on rectangular area  
+    def QCslicerectangular(self,boundingbox,zslice,slicenow=False):
+        
+        #get z array for slice
+        #create coordinate array
+        xcordn = self.getLocalCoordsPointsX()+self.get_gorigin()[0]
+        ycordn = self.getLocalCoordsPointsY()+self.get_gorigin()[1]
+        zcordn = self.getLocalCoordsPointsZ()+self.get_gorigin()[2]
+        idzcor = (np.abs(zcordn - zslice)).argmin()
+        validzcor = zcordn[idzcor]
+        
+        #dummy volume
+        dummyvol = self.getNPArray()
+        
+        #set dummy surface based on zslice
+        dummysurface = np.flipud(dummyvol[0,:,:,idzcor].T)
+        
+        # set the constrain
+        fig = plt.figure(figsize=(5,5),dpi = 300,constrained_layout=True)
+        gs  = fig.add_gridspec(2, 2)
+
+        ax = fig.add_subplot(gs[:,:])
+        ax.tick_params(axis='both', which='major', labelsize=6)
+        ax.tick_params(axis='both', which='minor', labelsize=6)
+        plt.style.use('seaborn-pastel') 
+        plt.rcParams.update({'font.size': 6})
+        plt.rcParams["font.family"] = "serif"
+        
+        #plot surface
+        plt.imshow(dummysurface,cmap="gist_earth"
+                  ,extent=[xcordn[0],xcordn[-1],ycordn[0],ycordn[-1]])
+        plt.colorbar(extend='both', aspect=40,orientation='horizontal',pad=0.0075,shrink=0.8,label='Vp')
+
+        #plot bounding box
+        plt.imshow(dummysurface,cmap="gist_earth"
+                  ,extent=[xcordn[0],xcordn[-1],ycordn[0],ycordn[-1]])
+        plt.colorbar(extend='both', aspect=40,orientation='horizontal',pad=0.0075,shrink=0.8,label='Vp')
+    
+        # Create a Rectangle patch
+        rect = patches.Rectangle((boundingbox[0],boundingbox[2])
+                                 ,boundingbox[1]-boundingbox[0]
+                                 ,boundingbox[3]-boundingbox[2], linewidth=1, ls='--',edgecolor='r',facecolor='none')
+
+        ax.add_patch(rect)
+        plt.xlabel('x [m]')
+        plt.ylabel('y [m]')
+        plt.yticks(rotation=90,va='center') 
+        plt.locator_params(nbins=3)
+        
+        fig.suptitle('Horizontal slice at '+str(validzcor)+'km') 
+        
+                
+        #find closest indexes with bounding box 
+        x1bound = (np.abs(xcordn - boundingbox[0])).argmin()
+        x2bound = (np.abs(xcordn - boundingbox[1])).argmin()
+
+        y1bound = (np.abs(ycordn - boundingbox[2])).argmin()
+        y2bound = (np.abs(ycordn - boundingbox[3])).argmin()
+
+        #xyzmin
+        xmin = xcordn[x1bound]
+        ymin = ycordn[y1bound]
+        zmin = zcordn[0]
+
+        #slice based on the bound for all z
+        propsslice = dummyvol[:,x1bound:x2bound
+                               ,y1bound:y2bound,:]
+
+        
+        #new nx ny nz 
+        nx = propsslice.shape[1]
+        ny = propsslice.shape[2]
+        nz = propsslice.shape[3]
+
+        #another properties for girdmod3d
+        nprops = propsslice.shape[0]
+        axorder = {'X':0,'Y':1,'Z':2}
+        
+        #delta doesnot change
+        deltas = self.get_deltas()
+        
+        if slicenow == True:
+            print("slicing volume")
+            return gridmod3d(propsslice,nprops,axorder,(nx,ny,nz),deltas,(xmin,ymin,zmin))
+
+  
+    # Function to get the width of smoothing kernel (in m)
+    def get_sigma(self,sig_meters):
+        
+        x_sig = np.int(sig_meters/self._deltas[0])
+        y_sig = np.int(sig_meters/self._deltas[1])
+        z_sig = np.int(sig_meters/self._deltas[2])
+
+        print('sigma nx,ny,nz -->',x_sig,y_sig,z_sig)
+        print('sigma in m dx,dy,dz -->',x_sig*self._deltas[0],y_sig*self._deltas[1],z_sig*self._deltas[2])
+        
+        return(x_sig,y_sig,z_sig)
+    
+    #function to get new delta for subsampling
+    def get_deltasubsamp(self,del_meters):
+        newdx = np.int(del_meters/self._deltas[0])
+        newdy = np.int(del_meters/self._deltas[1])
+        newdz = np.int(del_meters/self._deltas[2])
+    
+        print('old dx,dy,dz [m] -->',self._deltas[0],self._deltas[1],self._deltas[2])
+        print('new dx,dy,dz [m] --> '+str(del_meters))
+
+        return(newdx,newdy,newdz)
