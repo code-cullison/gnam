@@ -25,5 +25,6 @@ def correct_station_depths(stations):
     for channel_key in depth_dict:
         for s in stations:
             if s.code == channel_key:
-                s.channels[0].depth = depth_dict[channel_key]
+                for chan in s:
+                    chan.depth = depth_dict[channel_key]
  
