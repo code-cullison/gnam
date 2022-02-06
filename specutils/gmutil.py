@@ -6,6 +6,7 @@
 
 import numpy as np
 import time
+from tqdm import trange, tqdm_notebook
 
 mod_perc = 10
 
@@ -66,8 +67,8 @@ class gmutil:
         xmin = 0.0
         ymin = 0.0
         zmin = -1*gm3d.get_gorigin()[2]
-        print('dz:',dz)
-        print('zmin:',zmin)
+#         print('dz:',dz)
+#         print('zmin:',zmin)
         assert zmin == -0.5*dz
 
 
@@ -80,7 +81,7 @@ class gmutil:
         np_z = zmin + 0.5*dz - dz*np.arange(nzp1)
         np_z = np_z[::-1]
 
-        print('np_z:\n',np_z)
+#         print('np_z:\n',np_z)
 
 
         nodes = np.zeros((nyp1,nxp1,2))
@@ -99,8 +100,8 @@ class gmutil:
         f.write('%d\n' %(nxp1*nyp1*nzp1))
         z_stride = 0
         str_nodes = []
-        for iiz in range(nzp1):
-            for ixy in range(nxp1*nyp1):
+        for iiz in tqdm_notebook(range(nzp1),desc="write nodes"):
+            for ixy in tqdm_notebook(range(nxp1*nyp1),desc="iterate XY per Z",leave=False):
                 str_nodes.append('%9d %10.1f %10.1f %10.1f\n' % (iiz*nxp1*nyp1 + ixy + 1, nodes[ixy,0], nodes[ixy,1], np_z[iiz]))
             if (iiz+1)%mod_perc == 0 or iiz == nzp1-1:
                 f.writelines(str_nodes)
@@ -181,9 +182,9 @@ class gmutil:
         
         i_e = 0
         cv = np.zeros((8),dtype=np.int32)
-        sgn = -1
-        for iz in range(nz):
-            for iy in range(ny):
+        sgn = -1 
+        for iz in tqdm_notebook(range(nz),desc="write files"):
+            for iy in tqdm_notebook(range(ny),desc="iterate XY per Z",leave=False):
                 for ix in range(nx):
 
                     #
@@ -321,9 +322,9 @@ class gmutil:
 
         self.writeMesh2Files(fpath,gm3d)
 
-        t_total = (time.time() - t_start)/3600
-        print('runtime (h):', t_total)
+#         t_total = (time.time() - t_start)/3600
+#         print('runtime (h):', t_total)
         
-        return t_total
+#         return t_total
 
     #end def writeSpecfem3DMesh
