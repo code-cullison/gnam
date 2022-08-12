@@ -7,7 +7,7 @@ Contributors to this code:
   - Primary author
 - La Ode Marzujriban Masfara:
   - Secondary author
-  - Some modifications to model.gridmod3d.py
+  - Some modifications to model/gridmod3d.py
   - Some notebooks for use cases
 - Rhys Hawkins:
   - mics/GMUtils: Helped develope the mesh generator for SPECFEM3D
