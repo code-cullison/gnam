@@ -10,6 +10,6 @@ The gnam package was developed to construct NumPy arrays from the piece-wise 201
   - Modifications to model/gridmod3d.py
   - Some notebooks for usecases
 - Rhys Hawkins:
-  - mics/GMUtils: Helped develope the mesh generator for SPECFEM3D
+  - mics/GMUtils: Helped develop the mesh generator for SPECFEM3D
  
 
